@@ -5,71 +5,92 @@
 <span class=lang-line>/</span>
 <a class=lang-link id=en href=/en/>English</a></div><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
 <span class=site-title>野生菌のBlog</span>
-<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>代码的世界需要野生菌来发酵</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class="menu-item menu-item-active"><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>目录</a></li><li class=menu-item><a href=/categories rel=section><i class="menu-item-icon fa fa-fw fa-categories"></i><br>分类</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
+<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>代码的世界需要野生菌来发酵</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class="menu-item menu-item-active"><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>目录</a></li><li class=menu-item><a href=/categories rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>分类</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
 <span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/golang_gc/ itemprop=url>Golang三色标记+GC混合写屏障机制</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-28">2022-06-28</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/golang itemprop=url rel=index><span itemprop=name>Golang</span></a>
+&nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>1671 字</span></span>
+<span class=leancloud-world-count>1754 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>4分钟</span></span></div></header><div class=post-body itemprop=articleBody>Golang三色标记+GC混合写屏障机制 Go v1.3 之前的标记清除法（mark and weep） GC ：Garbage Collection 垃圾回收 STW ：Stop the world &mdash;</div><div class="post-more-link text-center"><a class=btn href=/post/golang_gc/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/shell/ itemprop=url>Linux及shell相关指令学习笔记</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
-<span class=post-meta-item-text>时间：</span>
-<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-20">2022-06-20</time></span>
-<span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
-<span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>4084 字</span></span>
-<span class=post-readtime><i class="fa fa-eye fa-fw"></i>
-<span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>9分钟</span></span></div></header><div class=post-body itemprop=articleBody>Linux ctrl + alt + f1~f6 进入真正shell终端控制台 ctrl + alt + f7 图形化界面 ctrl + / ctl - 放大缩小 ls pwd linux 只有一棵树 cd / 切换到根目录 根目录下的文件夹说明 /bin : 存放可</div><div class="post-more-link text-center"><a class=btn href=/post/shell/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/grpc-http2/ itemprop=url>k8s中grpc负载不均衡的问题</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=leancloud-view-count>4分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/2022062712.png alt=image-20220627161453255></p><p>Go语言的GC是一个值得探讨深究的问题，从V1.3的标记清除法到V1.5的三色标记法，再到V1.8并沿用至今的三色标记法+混合写屏障机制，它的发展过程十分有趣。那么具体是怎样实现的呢？一起和野生菌来看看吧~</p></div><div class="post-more-link text-center"><a class=btn href=/post/golang_gc/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/grpc-http2/ itemprop=url>k8s中grpc负载不均衡的问题探究</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-15">2022-06-15</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/k8s itemprop=url rel=index><span itemprop=name>K8s</span></a>
+&nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>4241 字</span></span>
+<span class=leancloud-world-count>4329 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>9分钟</span></span></div></header><div class=post-body itemprop=articleBody>1. gRPC gRPC是由google开发的，是一款语言中立、平台中立、开源的RPC(Remote Procedure Call，远程过程调用)框架。 在gRPC里客户端应</div><div class="post-more-link text-center"><a class=btn href=/post/grpc-http2/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/port/ itemprop=url>高危端口及解决方案</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=leancloud-view-count>9分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/20220615_1.jpg alt></p><p>在实习期间，公司流量平台的服务是基于gRPC微服务框架的，但是在使用K8s进行配置时，却发现出现了负载均衡失效的问题，那么是什么原因导致的，又该如何解决呢？一起和野生菌探究吧~</p></div><div class="post-more-link text-center"><a class=btn href=/post/grpc-http2/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/port/ itemprop=url>高危端口及解决方案</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-15">2022-06-15</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/cybersecurity itemprop=url rel=index><span itemprop=name>cybersecurity</span></a>
+&nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>3098 字</span></span>
+<span class=leancloud-world-count>3131 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>7分钟</span></span></div></header><div class=post-body itemprop=articleBody>135端口 端口介绍 在 Windows 默认的五个典型开放端口中，135 用途最为复杂，也最容易引起外部攻击。主要用于使用RPC（远程过程调用）协议并提供DCO</div><div class="post-more-link text-center"><a class=btn href=/post/port/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/my-first-post/ itemprop=url>详解Redis缓存穿透、击穿、雪崩原理及解决方法</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=leancloud-view-count>7分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/1.jpg alt>
+介绍135、139、445三个高危端口，以及它们的关闭和开启方式。</p></div><div class="post-more-link text-center"><a class=btn href=/post/port/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/my-first-post/ itemprop=url>详解Redis缓存穿透、击穿、雪崩原理及解决方法</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-08">2022-06-08</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/redis itemprop=url rel=index><span itemprop=name>Redis</span></a>
+&nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
 <span class=leancloud-world-count>1181 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>3分钟</span></span></div></header><div class=post-body itemprop=articleBody><p>在实际的项目开发中，用户的数据我们一般都使用数据库进行存储，其数据是存储在磁盘上的，虽然稳定，但I/O速度很慢，当用户量很多且有并发需求时，请求数量一上来数据库就很容易崩溃。</p></div><div class="post-more-link text-center"><a class=btn href=/post/my-first-post/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article></section><nav class=pagination><span class="page-number current">1</span>
+<span class=leancloud-view-count>3分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/1_1.png alt></p><p>在实际的项目开发中，用户的数据我们一般都使用数据库进行存储，其数据是存储在磁盘上的，虽然稳定，但I/O速度很慢，当用户量很多且有并发需求时，请求数量一上来数据库就很容易崩溃。</p></div><div class="post-more-link text-center"><a class=btn href=/post/my-first-post/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=/post/shell/ itemprop=url>Linux及shell相关指令学习笔记</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=post-meta-item-text>时间：</span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-05">2022-06-05</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span>
+<span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
+<span class=post-meta-item-text>字数：</span>
+<span class=leancloud-world-count>4104 字</span></span>
+<span class=post-readtime><i class="fa fa-eye fa-fw"></i>
+<span class=post-meta-item-text>阅读：</span>
+<span class=leancloud-view-count>9分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/20220624_3.png alt=image-20220624115054303></p><p>Linux及Shell常用指令学习笔记~</p></div><div class="post-more-link text-center"><a class=btn href=/post/shell/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article></section><nav class=pagination><span class="page-number current">1</span>
 <a class=page-number href=/p/2/>2</a>
 <a class=page-number href=/p/3/>3</a>
 <a class="extend next" rel=next href=/p/2/><i class="fa fa-angle-right"></i></a></nav></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>(〃‘▽’〃)</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>12</span>
-<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>2</span>
-<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>12</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>13</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="feed-link motion-element"><a href=/index.xml rel=alternate type=application/rss+xml target=_blank><i class="fa fa-rss"></i>
 RSS 订阅</a></div><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span>
 <span class=links-of-author-item><a href=https://www.zhihu.com/people/xiao-ye-sheng-48 target=_blank title=知乎><i class="fa fa-fw fa-globe"></i>
 知乎</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://nutzam.com/ title=Nutz target=_blank>Nutz</a></li><li class=links-of-blogroll-item><a href=https://jfinal.com/ title=JFinal target=_blank>JFinal</a></li><li class=links-of-blogroll-item><a href=http://wendal.net/ title=Wendal target=_blank>Wendal</a></li><li class=links-of-blogroll-item><a href=https://www.liaoxuefeng.com/ title=廖雪峰 target=_blank>廖雪峰</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
-标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/markdown>Markdown
-<sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/blog>Blog
-<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/css>Css
-<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/emoji>Emoji
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/blog>Blog
+<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/cybersecurity>Cybersecurity
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/gc>Gc
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/github>Github
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
-<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/html>HTML
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/http2>Http2
+<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hugo>Hugo
+<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/k8s>K8s
+<sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
 <sup>1</sup></a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
 <span class=with-love><i class="fa fa-heart"></i></span>
 <span class=copyright-author>野生菌のBlog</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.100.1</a></span>
