@@ -37,6 +37,7 @@ Go v1.5 三色标记法 三色标记法流程 三色标记法中，我们在GC�
 具体操作 在黑色A对象引用B对象时，B对象被标记为灰色（满足强三色不变式）
 为了不影响性能，不在栈上使用
 这里，对象8，9是黑色对象新引用的对象，但只将8标记为了灰色，对象9仍然是白色
+![image-20220627165603956]\images\image-20220627165603956.png)
 在准备回收白色前，重新遍历扫描一次栈空间，此时加STW暂停保护栈，防止有新的白色被黑色引用
 不足 结束时需要STW重新扫描栈，大约消耗10-100ms
 删除写屏障 对象被删除时，触发的机制
@@ -49,7 +50,279 @@ Go v1.8混合写屏障机制 之前我们可以看到插入写屏障和删除写
 流程 GC开始将栈上的对象全部扫描并标记为黑色（之后不再进行二次扫描，无需STW） GC期间，任何在栈上创建的新对象，均为黑色 被删除的对象标记为灰色 被添加的对象标记为灰色 真实场景 场景一：对象被一个堆对象删除引用，成为另一个栈对象的下游
 场景二：对象被一个栈对象删除引用，成为另一个栈对象的下游
 场景三：对象被一个堆对象删除引用，成为另一个堆对象的下游
-场景四：对象被一个栈对象删除引用，成为另一个堆对象的下游</content></entry><entry><title>k8s中grpc负载不均衡的问题</title><url>/post/grpc-http2/</url><categories/><tags><tag>gRPC</tag><tag>HTTP2</tag><tag>k8s</tag></tags><content type="html">
+场景四：对象被一个栈对象删除引用，成为另一个堆对象的下游</content></entry><entry><title>Linux及shell相关指令学习笔记</title><url>/post/shell/</url><categories/><tags><tag>linux</tag><tag>shell</tag></tags><content type="html"> Linux ctrl + alt + f1~f6 进入真正shell终端控制台
+ctrl + alt + f7 图形化界面
+ctrl + / ctl - 放大缩小
+ls pwd
+linux 只有一棵树
+cd / 切换到根目录
+根目录下的文件夹说明 /bin : 存放可以直接执行的常用命令 （链接到/usr/bin/)
+/sbin : 管理员用的指令（链接到/usr/sbin/)
+/lib : 库目录，放置动态链接库（链接到/usr/lib/)
+/lib64 : 64位特殊的动态链接库（链接到/usr/lib64/)
+/boot : 存放内核及启动所需要的文件
+/dev : 设备目录
+/etc : 系统需要的配置文件 .conf
+/home : 普通用户的主目录
+/root : 管理员用户的主目录
+/opt : 放置其他第三方文件
+/media ：挂载目录，识别U盘、光驱等外部设备
+/mnt : 挂载目录，外部存储
+/proc：进程目录
+/run : 运行时的临时信息，重启后无
+/srv : 系统服务
+/sys : 系统硬件信息
+/tmp : 系统临时目录
+/usr : 用户相关的文件
+/var : 放置log日志等文件
+Vi/ Vim编辑器 vim 编辑器之神(小而精) emacs 神之编辑器(all in one)
+切换输入法 win + 空格
+vim ... vi ...
+三种模式：
+命令模式下： w //已写入 q //退出
+一般模式 u //撤回 yy//复制一行 p//粘贴 5p//粘贴5行 8yy//复制了8行
+dd //删除当前行 3dd //删除3行 dw //删除当前词 d$//删除当前光标后这一行的内容 d^ //删除当前光标前的内容
+y$ //复制当前光标后这一行的内容 y^ //复制当前光标前的内容 yw//复制当前光标单词
+x //光标所在位置之后一个个剪切 X//光标所在位置之前一个个剪切
+r // 替换当前字符 R //替换一串字符，会依次替换
+^ //移动到行头 $ //移动到行尾 w //移动到下一个词头
+b //上一个词词头 e//移动到当前词尾
+gg //文档开头 G//文档最后一行 3G //跳到第3行行头
+命令模式下 set nu //显示行号 set nonu //关闭行号
+编辑模式 命令模式 网络配置和系统管理操作 ifconfig //查看网络配置
+ping //icmp
+桥接模式 NAT模式
+vim /etc/sysconfig/net/network-scripst/ifcfg-ens33
+service network restart //重启网络服务
+hostname //显示主机名
+vim /etc/hostname //修改主机名
+ssh root@主机名 //ssh远程登陆 Xshell为主要工具
+系统管理 Linux服务管理 service 服务：启动后一直存在，常驻内存的进程
+守护进程daemon = 系统服务
+service 服务名 start | stop |restart |status
+查看服务的方法：
+ls /usr/lib/systemd/
+新： systemctl status network
+系统运行级别 setup设置自启动服务
+开机 -> BIOS -> /boot ->init进程 -》运行级别 -》运行级别对应的服务
+关机重启 shutdown
+shutdown -c // 取消
+shutdown now //立即关机
+shutdown 3 //3min后关机
+shutdown 15:28 // 定时关机
+sync //将数据由内存同步到硬盘中
+halt //停机，关闭系统，但不断电
+poweroff //断电
+reboot //重启 == shutdown -r now
+经验： 先sync 再shutdown now
+帮助命令 man ls
+ctrl + l ->清屏
+文件目录 基础 pwd //绝对路径
+cd
+cd ../ 返回上一层
+cd - 返回上次的目录
+ls
+ls -a 所有 .开头的文件是隐藏文件
+ls -l == ll
+mkdir 创建目录
+mkdir -p g/h/i 没有父目录就自动创建
+rmdir 删除目录
+touch a.txt 创建文件
+cp source dest 复制文件到&hellip;
+rm 删除文件
+rm -f 强制删除
+rm -r 递归删除
+rm -rf 全部删除
+rm -f ./* 删除当前目录下所有文件
+mv source dest 移动文件
+mv a.txt b.txt 重命名
+cat 查看文件内容
+cat -n 显示行号
+more 按页显示文件内容 空格翻页 q退出
+less 打开大的文件 b往前 /关键字 查询 q退出
+echo 输出内容到控制台
+echo -e 支持转义字符
+###　输出重定向
+ls -l > 文件 将列表内容写入文件(覆盖写)
+ls -l &raquo; 文件 将列表内容追加写入文件末尾(追加写)
+head -n 20 &hellip;txt 显示开头20行
+tail -n 20 &hellip;txt 显示末尾20行
+tail -f 文件 实时追踪文档所有更新
+硬链接和软链接 Linux 链接分两种，一种被称为硬链接（Hard Link），另一种被称为符号链接（Symbolic Link）。默认情况下，ln 命令产生硬链接。
+硬连接
+硬连接指通过索引节点来进行连接。在 Linux 的文件系统中，保存在磁盘分区中的文件不管是什么类型都给它分配一个编号，称为索引节点号(Inode Index)。在 Linux 中，多个文件名指向同一索引节点是存在的。比如：A 是 B 的硬链接（A 和 B 都是文件名），则 A 的目录项中的 inode 节点号与 B 的目录项中的 inode 节点号相同，即一个 inode 节点对应两个不同的文件名，两个文件名指向同一个文件，A 和 B 对文件系统来说是完全平等的。删除其中任何一个都不会影响另外一个的访问。
+硬连接的作用是允许一个文件拥有多个有效路径名，这样用户就可以建立硬连接到重要文件，以防止“误删”的功能。其原因如上所述，因为对应该目录的索引节点有一个以上的连接。只删除一个连接并不影响索引节点本身和其它的连接，只有当最后一个连接被删除后，文件的数据块及目录的连接才会被释放。也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。
+软连接
+另外一种连接称之为符号连接（Symbolic Link），也叫软连接。软链接文件有类似于 Windows 的快捷方式。它实际上是一个特殊的文件。在符号连接中，文件实际上是一个文本文件，其中包含的有另一文件的位置信息。比如：A 是 B 的软链接（A 和 B 都是文件名），A 的目录项中的 inode 节点号与 B 的目录项中的 inode 节点号不相同，A 和 B 指向的是两个不同的 inode，继而指向两块不同的数据块。但是 A 的数据块中存放的只是 B 的路径名（可以根据这个找到 B 的目录项）。A 和 B 之间是“主从”关系，如果 B 被删除了，A 仍然存在（因为两个是不同的文件），但指向的是一个无效的链接。
+ln -s [原文件或目录] [软链接名] 在当前目录下给源文件创建一个软链接
+相当于一个指针
+pwd 显示该软链接的路径
+pwd -P 显示所指的实际真正的物理路径
+rm -rf myFolder 只是删除软链接
+rm -rf myFolder/ 删除了真正的文件夹
+ln [原文件或目录] [软链接名] 在当前目录下给源文件创建一个硬链接
+通过上面的测试可以看出：当删除原始文件 f1 后，硬连接 f2 不受影响，但是符号连接 f3 文件无效
+此外,硬链接只能针对文件,不能针对目录; 而软链接既可以文件也可以目录
+其他 history 显示历史输入过的命令
+history -c 清除历史
+时间日期 date 当前时间信息
+date + %Y
+date + %m
+date + %d
+date &ldquo;+%Y-%m-%d %H:%M:%S&rdquo;
+date +%s 当前秒数对应的时间戳(1970年1月1日到当前的秒数)
+date -s &ldquo;2017-06-19 20:42:33&rdquo; 设置系统时间
+ntpdate 同步时间
+cal 当前月历
+用户权限 用户 useradd 用户名 添加用户
+cd /home 除了root, 添加的用户都在/home下
+passwd 用户名 设置密码
+id 用户名 看用户是否存在
+cat /etc/passwd 查看所有用户
+su 用户名 切换用户
+who am i 当前用户名称
+sudo 为普通用户赋予root权限
+userdel 删除用户
+用户组 groupadd 组名 新增组
+usermod -g 组名 用户名 新增用户到组
+groupdel 组名 删除组
+文件权限 ll 或 ls -l 显示文件权限
+改变文件权限:
+chmod [{ugoa}{+-=}{rwx}] 文件或目录 (u:所有者 g:所有组 o:其他人)
+chmod [mode=421] [文件或目录]
+r =4 w=2 x=1 mode=[0,7]
+eg: chmod 777 a.txt chmod 644 b.txt
+chown 更改属主 -R(对文件夹,递归所有文件)
+chgrp 更改属组
+搜索查找 find [搜索范围] [选项] 对象
+选项有 -name -user -size
+eg: find /root -name &ldquo;*.cfg&rdquo;
+​ find /root -size +10M
+locate 搜索文件 //基于数据库查询
+可能不及时,所以要先 updatedb
+which [命令]
+eg: which ls which locate
+grep过滤查找及"|&ldquo;管道符
+管道符&rdquo;|", 表示将前一个命令的处理结果输出传递给后面的命令处理
+grep 选项 查找内容 源文件 (选项 -n 显示匹配行及行号)
+eg: ls | grep .cfg
+wc 文件名 (输出:行数 词数 字节数)
+eg: grep -n boot initial-setup-ks.cfg | wc
+压缩解压 gzip/gunzip 只能压缩文件不能压缩目录; 不保留原来的文件; 同时多个文件会产生多个压缩包
+zip /unzip 可以压缩文件夹
+-d 指定压缩目录
+tar [选项] &hellip;tar.gz 打包操作
+-c 打包 -x解包 -z打包同时压缩
+eg: tar -zcvf temp.tar.gz a.cfg b.txt 打包压缩
+tar -zxvf temp.tar.gz -C /temp 解压
+磁盘管理 tree ./ 当下所有的目录信息
+du 所有目录\子文件夹等的大小(disk usage)
+du -sh
+df -h 查看当前磁盘空间
+free -h 查看内存使用
+lsblk 查看设备挂载情况
+mount /umount 挂载/卸载
+fdisk 分区
+fdisk -l 查看磁盘分区详情
+进程管理 前台显示的进程 后台常驻的进程(服务,守护进程)
+ps 显示所有用户进程
+ps aux ps -ef(可以看进程父子关系)
+kill [选项] PID 终止进程
+-9 强制关闭
+killall 进程名 通杀
+systemctl start [服务名] 又开启了服务
+pstree 查看进程树
+-p 显示pid
+top 实时查看进程
+-d 指定多少秒刷新 -p 指定查看某个进程 -i 不显示闲置\僵尸进程
+ifconfig ping
+netstat -anp | grep 进程号 查看该进程网络信息
+netstat -nlp | grep 端口号 查看网络端口号占用情况
+crontab 设置定时任务
+crontab -l 查看已有定时任务
+crontab -e 编辑定时任务
+详情见 &hellip;&hellip;..
+Shell 执行脚本 chmod +x ./test.sh
+./test.sh
+或者 sh hello.sh 或者 source hello.sh 或者 . hello.sh
+区别: sh 或者bash 执行是开了一个子shell , 而source 和./ 是直接在当前shell执行
+使用变量 env 查看全局环境变量
+set 查看所有变量
+your_name="yuanye"
+echo $your_name
+echo ${your_name}
+readonly your_name //设定为只读变量
+unset your_name //删除变量
+g="hello, "$your_name" ! " //字符串拼接
+echo ${#your_name} //获取字符串长度
+echo ${your_name:1:2} //从第2个字符开始截取2个字符
+echo `expr index "$your_name" a` //查找子字符的位置
+# 注释
+:&lt;&lt;EOF ····· EOF //多行注释
+传递参数 echo &ldquo;Shell 传递参数实例！&rdquo;; echo &ldquo;执行的文件名：$0&rdquo;; echo &ldquo;第一个参数为：$1&rdquo;; echo &ldquo;第二个参数为：$2&rdquo;; echo &ldquo;第三个参数为：$3&rdquo;;
+chmod +x test.sh ./test.sh 1 2 3 $# 变量数
+$* 所有变量整体 $@ 所有变量形成一个数组
+$? 最后一次的返回值
+基本运算符 expr 是一款表达式计算工具，使用它能完成表达式的求值操作。
+例如，两个数相加 注意使用的是反引号 ` 而不是单引号 '：
+val=`expr 2 + 2`
+echo "两数之和为 ：$val"
+echo $(()) 或者 $[] 更简便的写法
+eg: b=$[2+2]
+条件判断 test $a=Hello
+echo $? 0为真 1为假
+[ $a = hello] 中间有空格
+echo $?
+整数比较:
+[ 2 -lt 5 ] -lt 小于 -gt 大于 -eq 等于 -le小于等于 -ge大于等于
+文件判断:
+[ -r hello.sh ] 看是否有什么权限 -r -w -x
+[ -e /home/a.txt ] 看文件是否存在
+多条件判断:
+&amp;&amp; 前一条命令成功执行才执行后一条 || 前一条命令执行失败后才执行后一条
+类似 &hellip;.. ? a : b 真执行a,假执行b
+eg: [ 3 -lt 5 ] &amp;&amp; echo ok || echo notok
+流程控制 if 判断 if [ 条件判断式 ]; then
+程序
+fi
+等同于
+if [ 条件判断式 ]
+then
+程序
+fi
+函数 系统函数 命令替换 eg: filename="$1"_log_$(date +%s)
+basename /root/scipts/a.txt &mdash;> a.txt 去掉最后一个/前面的所有内容
+dirname /root/scripts/a.txt &mdash;>/root/scripts 获取前面的路径部分
+自定义函数 funname[]
+{
+​ Action;
+​ [return int;]
+}
+正则表达式 模糊匹配
+grep sed awk 都支持正则表达式
+^ 匹配一行的开头
+eg : grep ^a
+$ 匹配一行的结束
+eg : grep t$
+. 匹配任意字符
+eg: grep r..t 中间有两个字符
+*出现任意次
+eg: grep ro*t o出现任意多次 ,匹配root rot rooooot rt等等
+以什么开头什么结尾:
+grep ^a.*bash$ 以a开头,以bash结尾
+字符区间 []
+grep r[a,b]t 匹配rat,rbt
+文本处理工具 cut cut [选项参数] filename
+eg: cut -d " " -f 1 cut.txt
+cat /etc/passed | grep bash$ | cut -d &ldquo;:&rdquo; -f 1,6,7
+echo $PATH | cut -d &ldquo;:&rdquo; -f 2-
+切割获取的ip地址:
+ifconfig ens33 | grep netmask | cut -d " " -f 10
+awk 把文件逐行的读入,已空格为默认分隔符将每行切片
+awk [选项参数] &lsquo;/pattern1/ {action1} /pattern2/{action2}&hellip;&rsquo; filename
+eg:搜索passwd文件已root关键字开头的所有行,并输出该行的第7列
+cat /etc/passwd | grep ^root | cut -d &ldquo;:&rdquo; -f 7
+cat /etc/passwd | awk -F &ldquo;:&rdquo; &lsquo;/ ^root/ print{$7}&rsquo;</content></entry><entry><title>k8s中grpc负载不均衡的问题</title><url>/post/grpc-http2/</url><categories/><tags><tag>gRPC</tag><tag>HTTP2</tag><tag>k8s</tag></tags><content type="html">
 1. gRPC gRPC是由google开发的，是一款语言中立、平台中立、开源的RPC(Remote Procedure Call，远程过程调用)框架。
 在gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容易地创建分布式应用和服务。与许多 RPC框架类似，gRPC也是基于以下理念：定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。在服务端实现这个接口，并运行一个 gRPC 服务器来处理客户端调用。 特性 基于HTTP/2 HTTP/2 提供了连接多路复用、双向流、服务器推送、请求优先级、首部压缩等机制。可以节省带宽、降低TCP链接次数、节省CPU，帮助移动设备延长电池寿命等。gRPC 的协议设计上使用了HTTP2 现有的语义，请求和响应的数据使用HTTP Body 发送，其他的控制信息则用Header 表示。
 IDL使用ProtoBuf gRPC使用ProtoBuf来定义服务，ProtoBuf是由Google开发的一种数据序列化协议（类似于XML、JSON、hessian）。ProtoBuf能够将数据进行序列化，并广泛应用在数据存储、通信协议等方面。压缩和传输效率高，语法简单，表达力强。
