@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Golang三色标记+GC混合写屏障机制</title><url>/post/golang_gc/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>GC</tag></tags><content type="html">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Golang三色标记+GC混合写屏障机制</title><url>http://yeplain.xyz/post/golang_gc/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>GC</tag></tags><content type="html">
 Go语言的GC是一个值得探讨深究的问题，从V1.3的标记清除法到V1.5的三色标记法，再到V1.8并沿用至今的三色标记法+混合写屏障机制，它的发展过程十分有趣。那么具体是怎样实现的呢？一起和野生菌来看看吧~
 Go v1.3 之前的标记清除法（mark and weep） GC ：Garbage Collection 垃圾回收
 STW ：Stop the world &mdash;&ndash;>目的：减小这个时间
@@ -51,7 +51,7 @@ Go v1.8混合写屏障机制 之前我们可以看到插入写屏障和删除写
 流程 GC开始将栈上的对象全部扫描并标记为黑色（之后不再进行二次扫描，无需STW） GC期间，任何在栈上创建的新对象，均为黑色 被删除的对象标记为灰色 被添加的对象标记为灰色 真实场景 场景一：对象被一个堆对象删除引用，成为另一个栈对象的下游
 场景二：对象被一个栈对象删除引用，成为另一个栈对象的下游
 场景三：对象被一个堆对象删除引用，成为另一个堆对象的下游
-场景四：对象被一个栈对象删除引用，成为另一个堆对象的下游</content></entry><entry><title>k8s中grpc负载不均衡的问题探究</title><url>/post/grpc-http2/</url><categories><category>K8s</category></categories><tags><tag>grpc</tag><tag>HTTP2</tag><tag>k8s</tag></tags><content type="html">
+场景四：对象被一个栈对象删除引用，成为另一个堆对象的下游</content></entry><entry><title>k8s中grpc负载不均衡的问题探究</title><url>http://yeplain.xyz/post/grpc-http2/</url><categories><category>K8s</category></categories><tags><tag>grpc</tag><tag>HTTP2</tag><tag>k8s</tag></tags><content type="html">
 在实习期间，公司流量平台的服务是基于gRPC微服务框架的，但是在使用K8s进行配置时，却发现出现了负载均衡失效的问题，那么是什么原因导致的，又该如何解决呢？一起和野生菌探究吧~
 1. gRPC gRPC是由google开发的，是一款语言中立、平台中立、开源的RPC(Remote Procedure Call，远程过程调用)框架。
 在gRPC里客户端应用可以像调用本地对象一样直接调用另一台不同的机器上服务端应用的方法，使得您能够更容易地创建分布式应用和服务。与许多 RPC框架类似，gRPC也是基于以下理念：定义一个服务，指定其能够被远程调用的方法（包含参数和返回类型）。在服务端实现这个接口，并运行一个 gRPC 服务器来处理客户端调用。 特性 基于HTTP/2 HTTP/2 提供了连接多路复用、双向流、服务器推送、请求优先级、首部压缩等机制。可以节省带宽、降低TCP链接次数、节省CPU，帮助移动设备延长电池寿命等。gRPC 的协议设计上使用了HTTP2 现有的语义，请求和响应的数据使用HTTP Body 发送，其他的控制信息则用Header 表示。
@@ -86,7 +86,7 @@ gRPC 是应用程序开发人员越来越普遍的选择。与 JSON-over-HTTP �
 代理负载平衡 在代理负载均衡中，客户端将rpc发送给LB (load Balancer)代理。LB将RPC调用分发到一个可用的后端服务器，该后端服务器实现为调用提供服务的实际逻辑。LB跟踪每个后端的负载，并实现公平分配负载的算法。客户端本身并不知道后台服务器。客户端是不可信的。这种体系结构通常用于面向用户的服务，其中来自开放互联网的客户端可以连接到服务器。
 客户端负载均衡 在客户端负载平衡中，客户端知道许多后端服务器，并为每个RPC选择一个后端服务器。如果客户端希望实现基于服务器负载报告的负载均衡算法。对于简单的部署，客户机可以在可用的服务器之间轮询请求。
 我们考虑使用 gRPC client LB 配合 Headless Service
-使用gRPC client LB 配合 Headless Service在 Kubernetes 上实现 gRPC 负载平衡 ···· 未完待续····</content></entry><entry><title>高危端口及解决方案</title><url>/post/port/</url><categories><category>cybersecurity</category></categories><tags><tag>port</tag><tag>cybersecurity</tag></tags><content type="html"> 介绍135、139、445三个高危端口，以及它们的关闭和开启方式。
+使用gRPC client LB 配合 Headless Service在 Kubernetes 上实现 gRPC 负载平衡 ···· 未完待续····</content></entry><entry><title>高危端口及解决方案</title><url>http://yeplain.xyz/post/port/</url><categories><category>cybersecurity</category></categories><tags><tag>port</tag><tag>cybersecurity</tag></tags><content type="html"> 介绍135、139、445三个高危端口，以及它们的关闭和开启方式。
 135端口 端口介绍 在 Windows 默认的五个典型开放端口中，135 用途最为复杂，也最容易引起外部攻击。主要用于使用RPC（远程过程调用）协议并提供DCOM（分布式组件对象模型）服务。
 通过RPC可以保证在一台计算机上运行的程序可以顺利地执行远程计算机上的代码：具体来说，会向对方电脑的 135 端口询问可以使用哪个端口进行通信。这样，对方的电脑就会告知可以使用的端口号。使用DCOM可以通过网络直接进行通信，能够包括HTTP协议在内的多种网络传输。
 端口漏洞 Windows 2000和Windows XP⽤户曾中的“冲击波”病毒就是利⽤RPC漏洞进行攻击。RPC本⾝在处理通过TCP/IP的消息交换部分有⼀个漏洞，该漏洞是由于错误地处理格式不正确的消息造成的。该漏洞会影响到RPC与DCOM之间的⼀个接⼝，该接⼝侦听的端⼝就是135。
@@ -100,7 +100,7 @@ gRPC 是应用程序开发人员越来越普遍的选择。与 JSON-over-HTTP �
 445 端口的作用是实现一些共享文件夹以及一些共享打印机的访问工作，只要在局域网络的范围之内就能进行轻松的访问工作。
 端口漏洞 由于只要在局域网络的范围之内就能通过445 端口进行访问，所以黑客侵入的可能性很高，黑客可以通过445端口进入我们的硬盘，从而对我们的文件进行共享，或者将我们硬盘内的数据格式化，导致我们的数据丢失。 2017年10月，由于病毒“坏兔子”来袭，国家互联网应急中心等安全机构建议用户及时关闭计算机以及网络设备上的445和139端口。多家网络安全机构监测分析发现，与此前席卷多国的WannaCry、Petya勒索病毒类似，这次在集团范围内传播的“蠕虫”病毒也会以感染的设备为跳板，攻击局域网内的其他电脑，形成“一台中招，一片遭殃”的情况。
 操作建议 与139 端口类似，公开服务器 445 端口是一件非常危险的事情。容易被黑客通过因特网轻松地盗看文件。如果给该帐号设置了写入权限，甚至可以轻松地篡改文件。也就是说在对外部公开的服务器中不应该打开这些端口。通过因特网使用文件服务器就等同自杀行为，因此建议关闭445 端口。
-关闭方法 单击 “开始”-“运行”，输入 “regedit”，单击 “确定” 按钮，打开注册表。 找到注册表项 “HKEY_LOCAL_MACHINE\System\Controlset\Services\NetBT\Parameters”。 选择 “Parameters” 项，右键单击，选择 “新建”——“DWORD 值”。 将 DWORD 值命名为 “SMBDeviceEnabled”。 右键单击 “SMBDeviceEnabled” 值，选择 “修改”。 在出现的 “编辑 DWORD 值” 对话框中，在 “数值数据” 下，输入 “0”，单击 “确定” 按钮，完成设置。 开启方法 单击 “开始”-“运行”，输入 “regedit”，单击 “确定” 按钮，打开注册表。 找到注册表项 “HKEY_LOCAL_MACHINE\System\Controlset\Services\NetBT\Parameters”。 选择 “Parameters” 项。 在右侧右键选中删除“SMBDeviceEnabled”值。 单击 “是” 按钮，设置完成，重新启动后即可打开 135 端口。</content></entry><entry><title>详解Redis缓存穿透、击穿、雪崩原理及解决方法</title><url>/post/my-first-post/</url><categories><category>Redis</category></categories><tags><tag>Redis</tag></tags><content type="html">
+关闭方法 单击 “开始”-“运行”，输入 “regedit”，单击 “确定” 按钮，打开注册表。 找到注册表项 “HKEY_LOCAL_MACHINE\System\Controlset\Services\NetBT\Parameters”。 选择 “Parameters” 项，右键单击，选择 “新建”——“DWORD 值”。 将 DWORD 值命名为 “SMBDeviceEnabled”。 右键单击 “SMBDeviceEnabled” 值，选择 “修改”。 在出现的 “编辑 DWORD 值” 对话框中，在 “数值数据” 下，输入 “0”，单击 “确定” 按钮，完成设置。 开启方法 单击 “开始”-“运行”，输入 “regedit”，单击 “确定” 按钮，打开注册表。 找到注册表项 “HKEY_LOCAL_MACHINE\System\Controlset\Services\NetBT\Parameters”。 选择 “Parameters” 项。 在右侧右键选中删除“SMBDeviceEnabled”值。 单击 “是” 按钮，设置完成，重新启动后即可打开 135 端口。</content></entry><entry><title>详解Redis缓存穿透、击穿、雪崩原理及解决方法</title><url>http://yeplain.xyz/post/my-first-post/</url><categories><category>Redis</category></categories><tags><tag>Redis</tag></tags><content type="html">
 在实际的项目开发中，用户的数据我们一般都使用数据库进行存储，其数据是存储在磁盘上的，虽然稳定，但I/O速度很慢，当用户量很多且有并发需求时，请求数量一上来数据库就很容易崩溃。
 为了解决这一问题，Redis这一内存数据库得到了广泛的应用，将其作为缓存中间件，可以将磁盘数据库中的数据缓存在Redis上，从而相当于在内存上进行了缓存，可以大大提高读写速度，提高系统性能。
 然而在缓存中，由于Redis和Mysql这类磁盘数据库速度的不匹配，会出现缓存异常的问题，其中缓存穿透、缓存击穿、缓存雪崩是需要考虑并解决的问题。
@@ -117,7 +117,7 @@ gRPC 是应用程序开发人员越来越普遍的选择。与 JSON-over-HTTP �
 解决方案 ①构建多级缓存机制：nginx缓存+redis缓存+其他缓存。
 ②设置过期标志更新缓存：记录缓存数据是否过期，如果过期会触发另外一个线程去在后台更新实时key的缓存。
 ③将缓存可以时间分散：如在原有缓存时间基础上增加一个随机值，这个值可以在1-5分钟随机，这样过期时间重复率就会降低，防止大量key同时过期。
-④使用锁或队列机制：使用锁或队列保证不会有大量线程一次性对数据库进行读写，从而避免大量并发请求访问数据库，该方法不适用于高并发情况。</content></entry><entry><title>Linux及shell相关指令学习笔记</title><url>/post/shell/</url><categories><category>Linux</category></categories><tags><tag>Linux</tag><tag>Shell</tag></tags><content type="html">
+④使用锁或队列机制：使用锁或队列保证不会有大量线程一次性对数据库进行读写，从而避免大量并发请求访问数据库，该方法不适用于高并发情况。</content></entry><entry><title>Linux及shell相关指令学习笔记</title><url>http://yeplain.xyz/post/shell/</url><categories><category>Linux</category></categories><tags><tag>Linux</tag><tag>Shell</tag></tags><content type="html">
 Linux及Shell常用指令学习笔记~
 Linux ctrl + alt + f1~f6 进入真正shell终端控制台
 ctrl + alt + f7 图形化界面
@@ -391,7 +391,7 @@ awk 把文件逐行的读入,已空格为默认分隔符将每行切片
 awk [选项参数] &lsquo;/pattern1/ {action1} /pattern2/{action2}&hellip;&rsquo; filename
 eg:搜索passwd文件已root关键字开头的所有行,并输出该行的第7列
 cat /etc/passwd | grep ^root | cut -d &ldquo;:&rdquo; -f 7
-cat /etc/passwd | awk -F &ldquo;:&rdquo; &lsquo;/ ^root/ print{$7}&rsquo;</content></entry><entry><title>如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)</title><url>/post/hugo-blog-make/</url><categories><category>blog</category></categories><tags><tag>hugo</tag><tag>github</tag><tag>blog</tag></tags><content type="html"> 个人博客有许多开源的框架，基于Go语言的Hugo框架有着快速方便的特点，且支持Markdown语法，利用它来构建博客可以大大提高我们的效率。下面一起来看看怎么基于它构建出我们理想的个人博客，并将它托管至GitHub上吧！
+cat /etc/passwd | awk -F &ldquo;:&rdquo; &lsquo;/ ^root/ print{$7}&rsquo;</content></entry><entry><title>如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)</title><url>http://yeplain.xyz/post/hugo-blog-make/</url><categories><category>blog</category></categories><tags><tag>hugo</tag><tag>github</tag><tag>blog</tag></tags><content type="html"> 个人博客有许多开源的框架，基于Go语言的Hugo框架有着快速方便的特点，且支持Markdown语法，利用它来构建博客可以大大提高我们的效率。下面一起来看看怎么基于它构建出我们理想的个人博客，并将它托管至GitHub上吧！
 1. 安装Hugo 野生菌使用的是Windows系统，所以安装过程中会基于Windows进行讲解，有关其他操作系统的安装方法可以参考官方文档
 首先去官网下载hugo框架，hugo官网
 下载完成后检查是否安装成功，输入:hugo version，若出现版本信息则表示安装成功。 2. 新建站点 这时候我们已经安装好了hugo框架，接下来进入我们想要放置网站文件的文件夹中，输入hugo new site blog， 再进入新创建的路径下cd blog
@@ -407,8 +407,8 @@ cat /etc/passwd | awk -F &ldquo;:&rdquo; &lsquo;/ ^root/ print{$7}&rsquo;</conte
 通过实名认证后，选择对应域名中的解析
 添加两条类型为CNAME的记录，值指向你自己的github博客url，我的是yeplain.github.io
 在github博客仓库的Settings页面里，将腾讯云购买的域名指定到Custom domain里
-然后就可以了！</content></entry><entry><title>Leetcode Study</title><url>/post/leetcode/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag></tags><content type="html"> Leetcode 刷题之旅~
-数组中重复的数字</content></entry><entry><title>Markdown语法手册</title><url>/post/zh-markdown-syntax/</url><categories/><tags/><content type="html"> 本文提供了一个可以在 Hugo 内容文件中使用的基本Markdown语法示例，还展示了基本 HTML 元素在 Hugo 主题中是否使用 CSS 装饰。
+然后就可以了！</content></entry><entry><title>Leetcode Study</title><url>http://yeplain.xyz/post/leetcode/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag></tags><content type="html"> Leetcode 刷题之旅~
+数组中重复的数字</content></entry><entry><title>Markdown语法手册</title><url>http://yeplain.xyz/post/zh-markdown-syntax/</url><categories/><tags/><content type="html"> 本文提供了一个可以在 Hugo 内容文件中使用的基本Markdown语法示例，还展示了基本 HTML 元素在 Hugo 主题中是否使用 CSS 装饰。
 标题 下面的 HTML 代码&lt;h1>—&lt;h6> 元素表示六个级别的节标题。 &lt;h1>是最高的节级别，&lt;h6>是最低的节级别。
 H1 H2 H3 H4 H5 H6 段落 生活是什么？生活是柴米油盐的平淡；是行色匆匆早出晚归的奔波；生活是错的时间遇到对的人的遗憾；是爱的付出与回报；生活是看不同的风景，遇到不同的人；是行至水穷尽，坐看云起时的峰回路转；生活是灵魂经历伤痛后的微笑怒放；是挫折坎坷被晾晒后的坚强；生活是酸甜苦辣被岁月沉淀后的馨香；是经历风霜雪雨洗礼后的懂得；生活是走遍千山万水后，回眸一笑的洒脱。
 有些事，猝不及防，不管你在不在乎；有些人，并非所想，不管你明不明白；有些路，必须得走，不管你愿不愿意。不怕事，不惹事，不避事，做好自己，用真心面对一切；少埋怨，少指责，少发火，学会沉静，用微笑考量一切；多体察，多包容，多思索，尽心尽力，虽缺憾但无悔。像蒲公英一样美丽，虽轻盈，但并不卑微，它有自己的生命，也有自己的世界！
@@ -437,15 +437,15 @@ Xn + Yn = Zn
 按 CTRL+ALT+Delete 组合键结束会话。
 大多数蝾螈在夜间活动，捕食昆虫、蠕虫和其他小动物。
 以上引文摘自Rob Pike在2015年11月18日 Gopherfest 上的演讲
-。&#160;&#8617;&#xfe0e;</content></entry><entry><title>富文本内容测试</title><url>/post/zh-rich-content/</url><categories/><tags/><content type="html"> Hugo 上有几个内置短码
+。&#160;&#8617;&#xfe0e;</content></entry><entry><title>富文本内容测试</title><url>http://yeplain.xyz/post/zh-rich-content/</url><categories/><tags/><content type="html"> Hugo 上有几个内置短码
 ，用于丰富内容，以及隐私配置
 还有一组简单的短代码，支持各种社交媒体嵌入的静态和非 JS 版本。
 YouTube 增强隐私短码 {{/&lt; youtube ZJthWmvUzzc >/}}
 Twitter 短码 {{/&lt; twitter_simple 1085870671291310081 >/}}
 Vimeo 短码 {{/&lt; vimeo_simple 48912912 >/}}
-哔哩哔哩短码</content></entry><entry><title>图像占位符显示</title><url>/post/zh-placeholder-text/</url><categories/><tags/><content type="html"> 范德格拉夫原理（Van de Graaf Canon）重构了曾经用于书籍设计中将页面划分为舒适比例的方法。这一原理也被称为“秘密原理”，用于许多中世纪的手稿和古板书中。在范德格拉夫原理中，文本区域和页面的长款具有相同的比例，并且文本区域的高度等于页面宽度，通过划分页面得到九分之一的订口边距和九分之二的切口边距，以及与页面长宽相同的比例的文本区域。
+哔哩哔哩短码</content></entry><entry><title>图像占位符显示</title><url>http://yeplain.xyz/post/zh-placeholder-text/</url><categories/><tags/><content type="html"> 范德格拉夫原理（Van de Graaf Canon）重构了曾经用于书籍设计中将页面划分为舒适比例的方法。这一原理也被称为“秘密原理”，用于许多中世纪的手稿和古板书中。在范德格拉夫原理中，文本区域和页面的长款具有相同的比例，并且文本区域的高度等于页面宽度，通过划分页面得到九分之一的订口边距和九分之二的切口边距，以及与页面长宽相同的比例的文本区域。
 Vagus 示例 The Van de Graaf Canon
-总结 当然设计中的黄金比例是为人所熟知的，黄金分割的公式为a:b=b:(a+b)。这是指较小的两个矩形与较大的两个矩形以相同的组合方式相关联。黄金分割比例为1:1.618。</content></entry><entry><title>数据公式设置显示</title><url>/post/zh-math-typesetting/</url><categories/><tags/><content type="html"> Hugo 项目中的数学表示法可以通过使用第三方 JavaScript 库来实现。
+总结 当然设计中的黄金比例是为人所熟知的，黄金分割的公式为a:b=b:(a+b)。这是指较小的两个矩形与较大的两个矩形以相同的组合方式相关联。黄金分割比例为1:1.618。</content></entry><entry><title>数据公式设置显示</title><url>http://yeplain.xyz/post/zh-math-typesetting/</url><categories/><tags/><content type="html"> Hugo 项目中的数学表示法可以通过使用第三方 JavaScript 库来实现。
 在这个例子中，我们将使用 MathJax
 创建一个文件 /content/en[zh-CN]/math.md
 可以全局启用MathJax，请在项目配置中将参数math设置为true
@@ -492,7 +492,7 @@ $$ \frac{n!}{k!(n-k)!} = {^n}C_k {n \choose k} $$
 矩阵 $$ \begin{pmatrix} a_{11} &amp; a_{12} &amp; a_{13}\ a_{21} &amp; a_{22} &amp; a_{23}\ a_{31} &amp; a_{32} &amp; a_{33} \end{pmatrix} \begin{bmatrix} 0 &amp; \cdots &amp; 0 \ \vdots &amp; \ddots &amp; \vdots \ 0 &amp; \cdots &amp; 0 \end{bmatrix} $$
 标点符号 $$ f(x) = \sqrt{1+x} \quad (x \ge -1) f(x) \sim x^2 \quad (x\to\infty) $$
 现在用标点符号:
-$$ f(x) = \sqrt{1+x}, \quad x \ge -1 f(x) \sim x^2, \quad x\to\infty $$</content></entry><entry><title>支持Emoji表情符号</title><url>/post/zh-emoji-support/</url><categories/><tags/><content type="html"> Emoji 表情符号可以通过多种方式在 Hugo 项目中启用。
+$$ f(x) = \sqrt{1+x}, \quad x \ge -1 f(x) \sim x^2, \quad x\to\infty $$</content></entry><entry><title>支持Emoji表情符号</title><url>http://yeplain.xyz/post/zh-emoji-support/</url><categories/><tags/><content type="html"> Emoji 表情符号可以通过多种方式在 Hugo 项目中启用。
 使用 Emoji 表情符号可以在模板中可以直接调用 emojify
 函数或是通过 内联短代码
 来实现。
@@ -510,4 +510,4 @@ $$ f(x) = \sqrt{1+x}, \quad x \ge -1 f(x) \sim x^2, \quad x\to\infty $$</content
 更多的 Emoji 表情符号代码可参考Emoji 配对目录
 。
 注意: 以上步骤在 Hugo 中启用 Unicode 标准表情符号和序列，但是这些符号的呈现取决于浏览器和平台，要设置表情符号的样式，您可以使用第三方表情符号字体或字体。例如：
-.emoji { font-family: Apple Color Emoji,Segoe UI Emoji,NotoColorEmoji,Segoe UI Symbol,Android Emoji,EmojiSymbols; }</content></entry><entry><title>关于我</title><url>/about.html</url><categories/><tags/><content type="html"> 编辑中·······</content></entry><entry><title/><url>/post/prometheus/</url><categories/><tags/><content type="html"/></entry></search>
+.emoji { font-family: Apple Color Emoji,Segoe UI Emoji,NotoColorEmoji,Segoe UI Symbol,Android Emoji,EmojiSymbols; }</content></entry><entry><title>关于我</title><url>http://yeplain.xyz/about.html</url><categories/><tags/><content type="html"> 编辑中·······</content></entry><entry><title/><url>http://yeplain.xyz/post/prometheus/</url><categories/><tags/><content type="html"/></entry></search>
