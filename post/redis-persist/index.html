@@ -18,52 +18,58 @@
 <span class=leancloud-view-count>1分钟</span></span>
 <span id=/post/redis-persist/ class="leancloud_visitors post-visitor" data-flag-title=Redis持久化实现方式><i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/20220629-7.png alt></p><p>怎么样批量实现Redis中key的持久化？一起来看看吧~</p><h2 id=方法一>方法一</h2><p>编写shell脚本：使用管道</p><p><code>redis-cli -h 127.0.0.1 -p 6379 keys "white:*" | xargs -i redis-cli -h 127.0.0.1 -p 6379 expire {} 86400</code></p><p><code>redis-cli keys "white:*" | xargs -i redis-cli expire {} 86400</code></p><p><code>redis-cli -h 127.0.0.1 -p 6379 keys "white:*" | xargs redis-cli -h 127.0.0.1 -p 6379 del</code></p><h2 id=方法二>方法二</h2><p>用Go写了一个脚本，buid为linux上的二进制文件后执行：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>package main
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/20220629-7.png alt></p><p>怎么样批量实现Redis中key的持久化？一起来看看吧~</p><h2 id=方法一>方法一</h2><p>编写shell脚本：使用管道</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>redis-cli -h 127.0.0.1 -p <span style=color:#666>6379</span> keys <span style=color:#b44>&#34;white:*&#34;</span> | xargs -i redis-cli -h 127.0.0.1 -p <span style=color:#666>6379</span> expire <span style=color:#666>{}</span> <span style=color:#666>86400</span>
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>import (
-</span></span><span style=display:flex><span>	&#34;fmt&#34;
-</span></span><span style=display:flex><span>	&#34;github.com/garyburd/redigo/redis&#34;
+</span></span><span style=display:flex><span>redis-cli keys <span style=color:#b44>&#34;white:*&#34;</span> | xargs -i redis-cli expire <span style=color:#666>{}</span> <span style=color:#666>86400</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>redis-cli -h 127.0.0.1 -p <span style=color:#666>6379</span> keys <span style=color:#b44>&#34;white:*&#34;</span> | xargs redis-cli -h 127.0.0.1 -p <span style=color:#666>6379</span> del
+</span></span></code></pre></div><h2 id=方法二>方法二</h2><p>用Go写了一个脚本，buid为linux上的二进制文件后执行：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>package</span> main
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#b44>&#34;fmt&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#b44>&#34;github.com/garyburd/redigo/redis&#34;</span>
 </span></span><span style=display:flex><span>)
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>func main() {
-</span></span><span style=display:flex><span>	conn, err := redis.Dial(&#34;tcp&#34;, &#34;127.0.0.1:6379&#34;)
-</span></span><span style=display:flex><span>	if err != nil {
-</span></span><span style=display:flex><span>		fmt.Println(&#34;Connect redis failed,&#34;, err)
-</span></span><span style=display:flex><span>		return
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>main</span>() {
+</span></span><span style=display:flex><span>	conn, err <span style=color:#666>:=</span> redis.<span style=color:#00a000>Dial</span>(<span style=color:#b44>&#34;tcp&#34;</span>, <span style=color:#b44>&#34;127.0.0.1:6379&#34;</span>)
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> err <span style=color:#666>!=</span> <span style=color:#a2f;font-weight:700>nil</span> {
+</span></span><span style=display:flex><span>		fmt.<span style=color:#00a000>Println</span>(<span style=color:#b44>&#34;Connect redis failed,&#34;</span>, err)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>return</span>
 </span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	defer conn.Close()
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>defer</span> conn.<span style=color:#00a000>Close</span>()
 </span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>	persist(&#34;rls:*&#34;, conn)
-</span></span><span style=display:flex><span>	persist(&#34;white:*&#34;, conn)
-</span></span><span style=display:flex><span>	persist(&#34;black:*&#34;, conn)
-</span></span><span style=display:flex><span>	persist(&#34;grey:*&#34;, conn)
-</span></span><span style=display:flex><span>	persist(&#34;breach:white*&#34;, conn)
-</span></span><span style=display:flex><span>	persist(&#34;breach:black*&#34;, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;rls:*&#34;</span>, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;white:*&#34;</span>, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;black:*&#34;</span>, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;grey:*&#34;</span>, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;breach:white*&#34;</span>, conn)
+</span></span><span style=display:flex><span>	<span style=color:#00a000>persist</span>(<span style=color:#b44>&#34;breach:black*&#34;</span>, conn)
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>}
-</span></span><span style=display:flex><span>func persist(Key string, conn redis.Conn) {
-</span></span><span style=display:flex><span>	scan, err := conn.Do(&#34;Scan&#34;, &#34;0&#34;, &#34;match&#34;, Key, &#34;count&#34;, 2000000)
-</span></span><span style=display:flex><span>	if err != nil {
-</span></span><span style=display:flex><span>		fmt.Println(&#34;connect redis failed,&#34;, err)
-</span></span><span style=display:flex><span>		return
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>persist</span>(Key <span style=color:#0b0;font-weight:700>string</span>, conn redis.Conn) {
+</span></span><span style=display:flex><span>	scan, err <span style=color:#666>:=</span> conn.<span style=color:#00a000>Do</span>(<span style=color:#b44>&#34;Scan&#34;</span>, <span style=color:#b44>&#34;0&#34;</span>, <span style=color:#b44>&#34;match&#34;</span>, Key, <span style=color:#b44>&#34;count&#34;</span>, <span style=color:#666>2000000</span>)
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> err <span style=color:#666>!=</span> <span style=color:#a2f;font-weight:700>nil</span> {
+</span></span><span style=display:flex><span>		fmt.<span style=color:#00a000>Println</span>(<span style=color:#b44>&#34;connect redis failed,&#34;</span>, err)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>return</span>
 </span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	dataList := scan.([]interface{})[1].([]interface{})
-</span></span><span style=display:flex><span>	for _, item := range dataList {
-</span></span><span style=display:flex><span>		itemStr := string(item.([]uint8))
-</span></span><span style=display:flex><span>		_, err = conn.Do(&#34;PERSIST&#34;, itemStr)
-</span></span><span style=display:flex><span>		if err != nil {
-</span></span><span style=display:flex><span>			fmt.Println(err)
-</span></span><span style=display:flex><span>			return
+</span></span><span style=display:flex><span>	dataList <span style=color:#666>:=</span> scan.([]<span style=color:#a2f;font-weight:700>interface</span>{})[<span style=color:#666>1</span>].([]<span style=color:#a2f;font-weight:700>interface</span>{})
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>for</span> _, item <span style=color:#666>:=</span> <span style=color:#a2f;font-weight:700>range</span> dataList {
+</span></span><span style=display:flex><span>		itemStr <span style=color:#666>:=</span> <span style=color:#a2f>string</span>(item.([]<span style=color:#0b0;font-weight:700>uint8</span>))
+</span></span><span style=display:flex><span>		_, err = conn.<span style=color:#00a000>Do</span>(<span style=color:#b44>&#34;PERSIST&#34;</span>, itemStr)
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>if</span> err <span style=color:#666>!=</span> <span style=color:#a2f;font-weight:700>nil</span> {
+</span></span><span style=display:flex><span>			fmt.<span style=color:#00a000>Println</span>(err)
+</span></span><span style=display:flex><span>			<span style=color:#a2f;font-weight:700>return</span>
 </span></span><span style=display:flex><span>		}
 </span></span><span style=display:flex><span>	}
-</span></span><span style=display:flex><span>	fmt.Printf(&#34;%s PERSIST done!\n&#34;, Key)
-</span></span><span style=display:flex><span>	return
-</span></span><span style=display:flex><span>}</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/redis rel=tag title=Redis>#Redis#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/wsl2/ rel=next title=wsl2更新源失败问题><i class="fa fa-chevron-left"></i> wsl2更新源失败问题</a></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/redis-mysql/ rel=prev title=Redis与Mysql一致性实现探究>Redis与Mysql一致性实现探究
+</span></span><span style=display:flex><span>	fmt.<span style=color:#00a000>Printf</span>(<span style=color:#b44>&#34;%s PERSIST done!\n&#34;</span>, Key)
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/redis rel=tag title=Redis>#Redis#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/wsl2/ rel=next title=wsl2更新源失败问题><i class="fa fa-chevron-left"></i> wsl2更新源失败问题</a></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/redis-mysql/ rel=prev title=Redis与Mysql一致性实现探究>Redis与Mysql一致性实现探究
 <i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>17</span>
-<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
-<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>15</span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>18</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>7</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>16</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span>
 <span class=links-of-author-item><a href=https://www.zhihu.com/people/xiao-ye-sheng-48 target=_blank title=知乎><i class="fa fa-fw fa-globe"></i>
@@ -72,7 +78,7 @@ GitHub</a></span>
 Instagram</a></span>
 <span class=links-of-author-item><a href=mailto:%20yuanyeh@nuaa.edu.cn target=_blank title=Email><i class="fa fa-fw fa-envelope"></i>
 Email</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
-友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc

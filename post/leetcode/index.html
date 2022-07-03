@@ -12,18 +12,35 @@
 &nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>14 字</span></span>
+<span class=leancloud-world-count>399 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
 <span class=leancloud-view-count>1分钟</span></span>
 <span id=/post/leetcode/ class="leancloud_visitors post-visitor" data-flag-title="Leetcode Study"><i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>Leetcode 刷题之旅~</p><h2 id=数组中重复的数字><strong>数组中重复的数字</strong></h2></div><footer class=post-footer><div class=post-tags><a href=/tags/golang rel=tag title=Golang>#Golang#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/hugo-blog-make/ rel=next title="如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)"><i class="fa fa-chevron-left"></i> 如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)</a></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/zh-markdown-syntax/ rel=prev title=Markdown语法手册>Markdown语法手册
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>Leetcode 刷题之旅~</p><h2 id=1-数组中重复的数字>1. 数组中重复的数字</h2><h3 id=描述>描述</h3><p>在一个长度为n的数组里的所有数字都在0到n-1的范围内。 数组中某些数字是重复的，但不知道有几个数字是重复的。也不知道每个数字重复几次。请找出数组中任意一个重复的数字。 例如，如果输入长度为7的数组[2,3,1,0,2,5,3]，那么对应的输出是2或者3。存在不合法的输入的话输出-1</p><p>数据范围：0≤<em>n</em>≤10000</p><p>进阶：时间复杂度O(n) ，空间复杂度O(n)</p><h3 id=示例>示例</h3><p>输入： [2,3,1,0,2,5,3]
+返回值：2
+说明：2或3都是对的</p><h3 id=代码>代码</h3><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>duplicate</span>( numbers []<span style=color:#0b0;font-weight:700>int</span> ) <span style=color:#0b0;font-weight:700>int</span> {
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>// write code here
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>    m <span style=color:#666>:=</span> <span style=color:#a2f>make</span>(<span style=color:#a2f;font-weight:700>map</span>[<span style=color:#0b0;font-weight:700>int</span>]<span style=color:#0b0;font-weight:700>bool</span>,<span style=color:#a2f>len</span>(numbers))
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> _, num <span style=color:#666>:=</span> <span style=color:#a2f;font-weight:700>range</span> numbers{
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> m[num] {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> num
+</span></span><span style=display:flex><span>        }<span style=color:#a2f;font-weight:700>else</span>{
+</span></span><span style=display:flex><span>            m[num] = <span style=color:#a2f;font-weight:700>true</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>-</span><span style=color:#666>1</span> 
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=2-二维数组中的查找>2. 二维数组中的查找</h2><h3 id=描述-1>描述</h3><p>在一个二维数组array中（每个一维数组的长度相同），每一行都按照从左到右递增的顺序排序，每一列都按照从上到下递增的顺序排序。请完成一个函数，输入这样的一个二维数组和一个整数，判断数组中是否含有该整数。</p><p>[</p><p>[1,2,8,9],
+[2,4,9,12],
+[4,7,10,13],
+[6,8,11,15]</p><p>]</p><p>给定 target = 7，返回 true。</p><p>给定 target = 3，返回 false。</p><h3 id=示例-1>示例</h3><p><img src=D:%5CHugoWebsite%5Cblog%5Cstatic%5Cimages%5Cl2.png alt=image-20220630103217118></p><h3 id=代码-1>代码</h3></div><footer class=post-footer><div class=post-tags><a href=/tags/golang rel=tag title=Golang>#Golang#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/hugo-blog-make/ rel=next title="如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)"><i class="fa fa-chevron-left"></i> 如何用Hugo搭建自己的个人博客(GithubPages + Aliyun)</a></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/zh-markdown-syntax/ rel=prev title=Markdown语法手册>Markdown语法手册
 <i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>17</span>
-<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>6</span>
-<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>15</span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>18</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>7</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>16</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span>
 <span class=links-of-author-item><a href=https://www.zhihu.com/people/xiao-ye-sheng-48 target=_blank title=知乎><i class="fa fa-fw fa-globe"></i>
@@ -32,7 +49,7 @@ GitHub</a></span>
 Instagram</a></span>
 <span class=links-of-author-item><a href=mailto:%20yuanyeh@nuaa.edu.cn target=_blank title=Email><i class="fa fa-fw fa-envelope"></i>
 Email</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
-友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
@@ -43,7 +60,7 @@ Email</a></span></div><div class="links-of-blogroll motion-element links-of-blog
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/github>Github
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/http2>Http2
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hugo>Hugo
-<sup>1</sup></a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#数组中重复的数字><strong>数组中重复的数字</strong></a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<sup>1</sup></a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#1-数组中重复的数字>1. 数组中重复的数字</a><ul><li><a href=#描述>描述</a></li><li><a href=#示例>示例</a></li><li><a href=#代码>代码</a></li></ul></li><li><a href=#2-二维数组中的查找>2. 二维数组中的查找</a><ul><li><a href=#描述-1>描述</a></li><li><a href=#示例-1>示例</a></li><li><a href=#代码-1>代码</a></li></ul></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
 <span class=with-love><i class="fa fa-heart"></i></span>
 <span class=copyright-author>野生菌のBlog</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.100.1</a></span>
 <span class=separator-line>/</span>
