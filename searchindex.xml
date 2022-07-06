@@ -652,9 +652,13 @@ $$ f(x) = \sqrt{1+x}, \quad x \ge -1 f(x) \sim x^2, \quad x\to\infty $$</content
 .emoji { font-family: Apple Color Emoji,Segoe UI Emoji,NotoColorEmoji,Segoe UI Symbol,Android Emoji,EmojiSymbols; }</content></entry><entry><title>关于我</title><url>https://yeplain.xyz/about.html</url><categories/><tags/><content type="html"> 编辑中·······</content></entry><entry><title>在Probe-server部署Prometheus监控</title><url>https://yeplain.xyz/post/prometheus/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>Prometheus</tag></tags><content type="html">
 由于实习工作需求，需要我对Probe-server部署普罗米修斯监控，从而动态观测其相应指标的统计变化，最后我分别使用gauge和counter数据类型对总访问次数、正常访问次数、正常返回次数、TCP各个方法调用次数、在线网关数进行监控，并连接grafana得到了友好的可视化输出！
 介绍 Prometheus中文发音为普罗米修斯，它可以使用各种数学算法实现强大的监控需求，并且原生支持K8S的服务发现，能监控容器的动态变化。结合Grafana绘出漂亮图形，最终使用alertmanager或Grafana实现报警。它与其他监控相比有以下主要优势：数据格式是Key/Value形式，简单、速度快；监控数据的精细程度是绝对的领先，达到秒级（但正因为数据采集精度高，对磁盘消耗大，存在性能瓶颈，而且不支持集群，但可以通过联邦能力进行扩展）；不依赖分布式存储，数据直接保存在本地，可以不需要额外的数据库配置。但是如果对历史数据有较高要求，可以结合OpenTSDB；周边插件丰富，如果对监控要求不是特别严格的话，默认的几个成品插件已经足够使用；本身基于数学计算模型，有大量的函数可用，可以实现很复杂的监控（所以学习成本高，需要有一定数学思维，独有的数学命令行很难入门）；可以嵌入很多开源工具的内部去进行监控，数据更可信。
+结构图如下：
 Prometheus的主要组件 1. 服务端 Prometheus服务端以一个进程方式启动，如果不考虑参数和后台运行的话，只需要解压安装包之后运行./prometheus脚本即可启动，程序默认监听在9090端口。每次采集到的数据叫做metrics。这些采集到的数据会先存放在内存中，然后定期再写入硬盘，如果服务重新启动的话会将硬盘数据写回到内存中，所以对内存有一定消耗。Prometheus不需要重视历史数据，所以默认只会保留15天的数据。
 2. 客户端 Prometheus客户端分为pull和push两种方式。如果是pull形式的话则是服务端主动向客户端拉取数据，这样需要客户端上安装exporters（导出器）作为守护进程，官网上也提供了很多exporters可以下载使用，比如使用最多的node_exporters，几乎把系统自身相关数据全部采集了，非常全面，node_exporter默认监听9100端口。
 如果是push形式的话客户端需要安装pushgateway插件，然后运需要运维人员用脚本把监控数据组织成键值形式提交给pushgateway，再由它提交给服务端。它适合于现有exporters无法满足需求时，自己灵活定制。
+总之：就是有两种方式: pushgateway和exporter。
+exporter由Prometheus server 不断pull
+pushgateway安装在服务端或客户端，我们把数据push到pushgateway，再由Prometheus server pull pushgateway
 3. metrics主要数据类型 · Gauges：最简单、使用最多的指标，获取一个返回值，这个返回值没有变化规律，不能肯定它一定是增长或是减少的状态，采集回来是多少就是多少。比如硬盘容量、CPU内存使用率都适合使用Gauges数据类型。
 · Counters：计数器。数据从0开始累计，理想状态下应该是永远增长或者是不变。适合统计机器开机时间、HTTP访问量
 · Histograms：和summary一样属于高级指标，用于统计数据的分布情况。比如最小值、最大值、中间值。这个类型不太好理解，比如说统计一天的日志，大部分用户响应时间都是正常的，只有少量用户异常，如果这个时候取平均值的话，这少量用户的异常情况就会被掩盖过去，而Histograms可以分别统计出全部用户的响应时间，比如0-1秒的用户有多少、1-2秒的用户有多少（其实有点像Kibana）
