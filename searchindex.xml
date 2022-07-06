@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
+相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 1/sqrt(x) 这个函数的执行效率优化到了极致。
+因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！</content></entry><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
 相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 1/sqrt(x) 这个函数的执行效率优化到了极致。
 因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！
 工作中，当业务量比较小的时候，用的机器也少，体会不到性能优化带来的收益。而当一个业务使用了几千台机器的时候，性能优化 20%，那就能省下几百台机器，一年能省几百万。省下来的这些钱，给员工发年终奖，那得多 Happy！
