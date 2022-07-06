@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pprof on 野生菌のBlog</title><link>https://yeplain.xyz/tags/pprof/</link><description>Recent content in pprof on 野生菌のBlog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 06 Jul 2022 10:17:12 +0800</lastBuildDate><atom:link href="https://yeplain.xyz/tags/pprof/index.xml" rel="self" type="application/rss+xml"/><item><title>深入解密Go语言之pprof</title><link>https://yeplain.xyz/post/pprof/</link><pubDate>Wed, 06 Jul 2022 10:17:12 +0800</pubDate><guid>https://yeplain.xyz/post/pprof/</guid><description>&lt;p>相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 &lt;code>1/sqrt(x)&lt;/code> 这个函数的执行效率优化到了极致。&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pprof on 野生菌のBlog</title><link>https://yeplain.xyz/tags/pprof/</link><description>Recent content in pprof on 野生菌のBlog</description><generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 06 Jul 2022 10:17:12 +0800</lastBuildDate><atom:link href="https://yeplain.xyz/tags/pprof/index.xml" rel="self" type="application/rss+xml"/><item><title>深入解密Go语言之pprof</title><link>https://yeplain.xyz/post/pprof/</link><pubDate>Wed, 06 Jul 2022 10:17:12 +0800</pubDate><guid>https://yeplain.xyz/post/pprof/</guid><description>&lt;p>&lt;img src="https://yeplain.xyz/images/pprof9.png" alt="image-20220706141900554">&lt;/p>
+&lt;p>相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 &lt;code>1/sqrt(x)&lt;/code> 这个函数的执行效率优化到了极致。&lt;/p>
 &lt;p>一般我们使用二分法，或者牛顿迭代法计算一个浮点数的平方根。但在这个函数里，作者使用了一个“魔数”，根本没有迭代，两步就直接算出了平方根。令人叹为观止！&lt;/p>
-&lt;p>因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！&lt;/p>
-&lt;p>工作中，当业务量比较小的时候，用的机器也少，体会不到性能优化带来的收益。而当一个业务使用了几千台机器的时候，性能优化 20%，那就能省下几百台机器，一年能省几百万。省下来的这些钱，给员工发年终奖，那得多 Happy！&lt;/p>
-&lt;p>一般而言，性能分析可以从三个层次来考虑：应用层、系统层、代码层。&lt;/p>
-&lt;p>应用层主要是梳理业务方的使用方式，让他们更合理地使用，在满足使用方需求的前提下，减少无意义的调用；系统层关注服务的架构，例如增加一层缓存；代码层则关心函数的执行效率，例如使用效率更高的开方算法等。&lt;/p>
-&lt;p>做任何事，都要讲究方法。在很多情况下，迅速把事情最关键的部分完成，就能拿到绝大部分的收益了。其他的一些边边角角，可以慢慢地缝合。一上来就想完成 100%，往往会陷入付出了巨大的努力，却收获寥寥的境地。&lt;/p>
-&lt;p>性能优化这件事也一样，识别出性能瓶颈，会让我们付出最小的努力，而得到最大的回报。&lt;/p>
-&lt;p>Go 语言里，pprof 就是这样一个工具，帮助我们快速找到性能瓶颈，进而进行有针对性地优化。&lt;/p></description></item></channel></rss>
+&lt;p>因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！&lt;/p></description></item></channel></rss>

@@ -1,24 +1,173 @@
-<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>- 野生菌のBlog</title><meta name=keywords content="博客,程序员,深度学习,Golang开发,思考,读书,笔记,技术,分享,"><meta name=author content="野生菌"><meta property="og:title" content><meta property="og:site_name" content="野生菌のBlog"><meta property="og:image" content="https://yeplain.xyz/img/author.jpg"><meta name=title content=" - 野生菌のBlog"><meta name=description content="欢迎来到野生菌的博客"><link rel="shortcut icon" href=https://yeplain.xyz/img/favicon.ico><link rel=apple-touch-icon href=https://yeplain.xyz/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://yeplain.xyz/img/apple-touch-icon.png><link href=//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.css rel=stylesheet><link href=https://yeplain.xyz/css/main.css rel=stylesheet type=text/css><link href=https://yeplain.xyz/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>在Probe-server部署Prometheus监控 - 野生菌のBlog</title><meta name=keywords content="博客,程序员,深度学习,Golang开发,思考,读书,笔记,技术,分享,"><meta name=author content="野生菌"><meta property="og:title" content="在Probe-server部署Prometheus监控"><meta property="og:site_name" content="野生菌のBlog"><meta property="og:image" content="https://yeplain.xyz/img/author.jpg"><meta name=title content="在Probe-server部署Prometheus监控 - 野生菌のBlog"><meta name=description content="欢迎来到野生菌的博客"><link rel="shortcut icon" href=https://yeplain.xyz/img/favicon.ico><link rel=apple-touch-icon href=https://yeplain.xyz/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://yeplain.xyz/img/apple-touch-icon.png><link href=//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.css rel=stylesheet><link href=https://yeplain.xyz/css/main.css rel=stylesheet type=text/css><link href=https://yeplain.xyz/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
 <span class=toggle-line></span>
 <span class=toggle-line></span></div></div><div class=site-meta><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
 <span class=site-title>野生菌のBlog</span>
 <span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>代码的世界需要野生菌来发酵</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-active"><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>目录</a></li><li class=menu-item><a href=/categories rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>分类</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
-<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/prometheus/ itemprop=url></a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/prometheus/ itemprop=url>在Probe-server部署Prometheus监控</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="0001-01-01">0001-01-01</time></span>
+<span class=post-category><i class="fa fa-folder-o fa-fw"></i>
+<span class=post-meta-item-text>分类：</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/golang itemprop=url rel=index><span itemprop=name>Golang</span></a>
+&nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>0 字</span></span>
+<span class=leancloud-world-count>2135 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>0分钟</span></span>
-<span id=/post/prometheus/ class="leancloud_visitors post-visitor" data-flag-title><i class="fa fa-binoculars fa-fw"></i>
+<span class=leancloud-view-count>5分钟</span></span>
+<span id=/post/prometheus/ class="leancloud_visitors post-visitor" data-flag-title=在Probe-server部署Prometheus监控><i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody></div><footer class=post-footer><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/zh-emoji-support/ rel=next title=支持Emoji表情符号><i class="fa fa-chevron-left"></i> 支持Emoji表情符号</a></div><div class="post-nav-prev post-nav-item"></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/prm1.png alt=image-20220706142413708></p><p>由于实习工作需求，需要我对Probe-server部署普罗米修斯监控，从而动态观测其相应指标的统计变化，最后我分别使用gauge和counter数据类型对总访问次数、正常访问次数、正常返回次数、TCP各个方法调用次数、在线网关数进行监控，并连接grafana得到了友好的可视化输出！</p><h2 id=介绍>介绍</h2><p>Prometheus中文发音为普罗米修斯，它可以使用各种数学算法实现强大的监控需求，并且原生支持K8S的服务发现，能监控容器的动态变化。结合Grafana绘出漂亮图形，最终使用alertmanager或Grafana实现报警。它与其他监控相比有以下主要优势：数据格式是Key/Value形式，简单、速度快；监控数据的精细程度是绝对的领先，达到秒级（但正因为数据采集精度高，对磁盘消耗大，存在性能瓶颈，而且不支持集群，但可以通过联邦能力进行扩展）；不依赖分布式存储，数据直接保存在本地，可以不需要额外的数据库配置。但是如果对历史数据有较高要求，可以结合OpenTSDB；周边插件丰富，如果对监控要求不是特别严格的话，默认的几个成品插件已经足够使用；本身基于数学计算模型，有大量的函数可用，可以实现很复杂的监控（所以学习成本高，需要有一定数学思维，独有的数学命令行很难入门）；可以嵌入很多开源工具的内部去进行监控，数据更可信。</p><h2 id=prometheus的主要组件><strong>Prometheus的主要组件</strong></h2><h3 id=1-服务端>1. 服务端</h3><p>Prometheus服务端以一个进程方式启动，如果不考虑参数和后台运行的话，只需要解压安装包之后运行./prometheus脚本即可启动，程序默认监听在9090端口。每次采集到的数据叫做metrics。这些采集到的数据会先存放在内存中，然后定期再写入硬盘，如果服务重新启动的话会将硬盘数据写回到内存中，所以对内存有一定消耗。Prometheus不需要重视历史数据，所以默认只会保留15天的数据。</p><h3 id=2-客户端>2. 客户端</h3><p>Prometheus客户端分为pull和push两种方式。如果是pull形式的话则是服务端主动向客户端拉取数据，这样需要客户端上安装exporters（导出器）作为守护进程，官网上也提供了很多exporters可以下载使用，比如使用最多的node_exporters，几乎把系统自身相关数据全部采集了，非常全面，node_exporter默认监听9100端口。</p><p>如果是push形式的话客户端需要安装pushgateway插件，然后运需要运维人员用脚本把监控数据组织成键值形式提交给pushgateway，再由它提交给服务端。它适合于现有exporters无法满足需求时，自己灵活定制。</p><h3 id=3-metrics主要数据类型>3. <strong>metrics主要数据类型</strong></h3><p><strong>· Gauges</strong>：最简单、使用最多的指标，获取一个返回值，这个返回值没有变化规律，不能肯定它一定是增长或是减少的状态，采集回来是多少就是多少。比如硬盘容量、CPU内存使用率都适合使用Gauges数据类型。</p><p><strong>· Counters</strong>：计数器。数据从0开始累计，理想状态下应该是永远增长或者是不变。适合统计机器开机时间、HTTP访问量</p><p><strong>· Histograms</strong>：和summary一样属于高级指标，用于统计数据的分布情况。比如最小值、最大值、中间值。这个类型不太好理解，比如说统计一天的日志，大部分用户响应时间都是正常的，只有少量用户异常，如果这个时候取平均值的话，这少量用户的异常情况就会被掩盖过去，而Histograms可以分别统计出全部用户的响应时间，比如0-1秒的用户有多少、1-2秒的用户有多少（其实有点像Kibana）</p><p><strong>具体到本项目，我使用Gauge对在线网关数进行了统计，其余使用Counter数据类型</strong>。</p><h2 id=我的工作>我的工作</h2><ol><li>首先新增了一个Prometheus_util.go文件，用于定义和初始化：</li></ol><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>package</span> utils
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> (
+</span></span><span style=display:flex><span>	<span style=color:#b44>&#34;github.com/prometheus/client_golang/prometheus&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#b44>&#34;github.com/prometheus/client_golang/prometheus/collectors&#34;</span>
+</span></span><span style=display:flex><span>	<span style=color:#b44>&#34;sinohorizon.com/probe-server/api/tcp-protocol/Protocol&#34;</span>
+</span></span><span style=display:flex><span>	tcp_protocol <span style=color:#b44>&#34;sinohorizon.com/probe-server/api/tcp-protocol/Protocol&#34;</span>
+</span></span><span style=display:flex><span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计在线网关数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumOnlineGateways = prometheus.<span style=color:#00a000>NewGauge</span>(prometheus.GaugeOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;online_gateways_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of online gateways&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计总访问次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumTotalVisits = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;total_visits_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The total number of visits&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计正常访问次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumSuccessVisits = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;success_visits_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The success number of visits&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计正常返回次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumSuccessResponds = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;success_respond_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The success number of responds&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计HeartBeat调用次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumHeartBeat = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;heartbeat_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of heartbeat&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计GetOnlineDeviceList次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumGetOnlineDeviceList = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;GetOnlineDeviceList_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of GetOnlineDeviceList&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计GetDevicePort次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumGetDevicePort = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;GetDevicePort_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of GetDevicePort&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计GetProbes次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumGetProbes = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;GetProbes_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of GetProbes&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计GetUdpPayLoad次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumGetUdpPayLoad = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;GetUdpPayLoad_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of GetUdpPayLoad&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计PingFailed次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumPingFailed = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;PingFailed_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of PingFailed&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计MatchProbe次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumMatchProbe = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;MatchProbe_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of MatchProbe&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>//统计FinishGatewayScan次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span><span style=color:#a2f;font-weight:700>var</span> NumFinishGatewayScan = prometheus.<span style=color:#00a000>NewCounter</span>(prometheus.CounterOpts{
+</span></span><span style=display:flex><span>	Name: <span style=color:#b44>&#34;FinishGatewayScan_numbers&#34;</span>,
+</span></span><span style=display:flex><span>	Help: <span style=color:#b44>&#34;The number of FinishGatewayScan&#34;</span>,
+</span></span><span style=display:flex><span>})
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>InitMonitorRegister</span>() (registry <span style=color:#666>*</span>prometheus.Registry) {
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>// 创建一个自定义的注册表
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry = prometheus.<span style=color:#00a000>NewRegistry</span>()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>// 添加 process 和 Go 运行时指标到自定义的注册表中
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry.<span style=color:#00a000>MustRegister</span>(collectors.<span style=color:#00a000>NewProcessCollector</span>(collectors.ProcessCollectorOpts{}))
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(collectors.<span style=color:#00a000>NewGoCollector</span>())
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>//统计在线网关数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	NumOnlineGateways.<span style=color:#00a000>Set</span>(<span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumOnlineGateways)
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>//统计总访问数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry.<span style=color:#00a000>MustRegister</span>(NumTotalVisits)
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>//统计成功访问次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry.<span style=color:#00a000>MustRegister</span>(NumSuccessVisits)
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>//统计成功返回次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry.<span style=color:#00a000>MustRegister</span>(NumSuccessResponds)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#080;font-style:italic>//统计各方法调用次数
+</span></span></span><span style=display:flex><span><span style=color:#080;font-style:italic></span>	registry.<span style=color:#00a000>MustRegister</span>(NumHeartBeat)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumGetOnlineDeviceList)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumGetDevicePort)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumGetProbes)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumGetUdpPayLoad)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumPingFailed)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumMatchProbe)
+</span></span><span style=display:flex><span>	registry.<span style=color:#00a000>MustRegister</span>(NumFinishGatewayScan)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>return</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>func</span> <span style=color:#00a000>IncMethodNums</span>(bodyType Protocol.RequestBody) {
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyHeartBeatRequest {
+</span></span><span style=display:flex><span>		NumHeartBeat.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyGetOnlineDevicesRequest {
+</span></span><span style=display:flex><span>		NumGetOnlineDeviceList.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyGetPortRequest {
+</span></span><span style=display:flex><span>		NumGetDevicePort.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyGetProbesRequest {
+</span></span><span style=display:flex><span>		NumGetProbes.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyGetUdpPayloadRequest {
+</span></span><span style=display:flex><span>		NumGetUdpPayLoad.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyPingFailedRequest {
+</span></span><span style=display:flex><span>		NumPingFailed.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyMatchProbesRequest {
+</span></span><span style=display:flex><span>		NumMatchProbe.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	} <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> bodyType <span style=color:#666>==</span> tcp_protocol.RequestBodyFinishGatewayScanRequest {
+</span></span><span style=display:flex><span>		NumFinishGatewayScan.<span style=color:#00a000>Inc</span>()
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><ol start=2><li><p>接着在主函数application.go处增加</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span><span style=color:#a2f;font-weight:700>go</span> <span style=color:#a2f;font-weight:700>func</span>() {
+</span></span><span style=display:flex><span>		<span style=color:#a2f;font-weight:700>for</span> {
+</span></span><span style=display:flex><span>			onlineGatewayNum <span style=color:#666>:=</span> handler.<span style=color:#00a000>GetOnlineGatewaysNum</span>()
+</span></span><span style=display:flex><span>			utils.NumOnlineGateways.<span style=color:#00a000>Set</span>(<span style=color:#a2f>float64</span>(onlineGatewayNum))
+</span></span><span style=display:flex><span>			time.<span style=color:#00a000>Sleep</span>(constants.UPDATE_ONELINE_GATEWAY_NUM_TIME)
+</span></span><span style=display:flex><span>		}
+</span></span><span style=display:flex><span>	}()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>	<span style=color:#a2f;font-weight:700>go</span> <span style=color:#a2f;font-weight:700>func</span>() {
+</span></span><span style=display:flex><span>		http.<span style=color:#00a000>Handle</span>(<span style=color:#b44>&#34;/metrics&#34;</span>, promhttp.<span style=color:#00a000>HandlerFor</span>(registry, promhttp.HandlerOpts{Registry: registry}))
+</span></span><span style=display:flex><span>		http.<span style=color:#00a000>ListenAndServe</span>(pprofListenStr, <span style=color:#a2f;font-weight:700>nil</span>)
+</span></span><span style=display:flex><span>	}()
+</span></span></code></pre></div></li><li><p>在各个方法入口处增加统计，如：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=display:flex><span>utils.NumTotalVisits.<span style=color:#00a000>Inc</span>()
+</span></span></code></pre></div></li><li><p>最终可视化结果示例：</p><p>通过连接grafana，得到了非常Nice的可视化输出</p><p><img src=/images/prm2.png alt=image-20220706144420758></p><p><img src=/images/prm3.png alt=image-20220706144500410></p></li></ol></div><footer class=post-footer><div class=post-tags><a href=/tags/golang rel=tag title=Golang>#Golang#</a>
+<a href=/tags/prometheus rel=tag title=Prometheus>#Prometheus#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/zh-emoji-support/ rel=next title=支持Emoji表情符号><i class="fa fa-chevron-left"></i> 支持Emoji表情符号</a></div><div class="post-nav-prev post-nav-item"></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>19</span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>19</span>
 <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>7</span>
-<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>17</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span>
 <span class=links-of-author-item><a href=https://www.zhihu.com/people/xiao-ye-sheng-48 target=_blank title=知乎><i class="fa fa-fw fa-globe"></i>
@@ -29,7 +178,7 @@ Instagram</a></span>
 Email</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
-<sup>4</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
+<sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/blog>Blog
@@ -38,7 +187,7 @@ Email</a></span></div><div class="links-of-blogroll motion-element links-of-blog
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/github>Github
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/http2>Http2
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/hugo>Hugo
-<sup>1</sup></a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<sup>1</sup></a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#介绍>介绍</a></li><li><a href=#prometheus的主要组件><strong>Prometheus的主要组件</strong></a><ul><li><a href=#1-服务端>1. 服务端</a></li><li><a href=#2-客户端>2. 客户端</a></li><li><a href=#3-metrics主要数据类型>3. <strong>metrics主要数据类型</strong></a></li></ul></li><li><a href=#我的工作>我的工作</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
 <span class=with-love><i class="fa fa-heart"></i></span>
 <span class=copyright-author>野生菌のBlog</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.100.1</a></span>
 <span class=separator-line>/</span>

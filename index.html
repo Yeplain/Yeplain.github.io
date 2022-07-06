@@ -15,10 +15,10 @@
 &nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>2827 字</span></span>
+<span class=leancloud-world-count>2867 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>6分钟</span></span></div></header><div class=post-body itemprop=articleBody><p>相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 <code>1/sqrt(x)</code> 这个函数的执行效率优化到了极致。</p><p>一般我们使用二分法，或者牛顿迭代法计算一个浮点数的平方根。但在这个函数里，作者使用了一个“魔数”，根本没有迭代，两步就直接算出了平方根。令人叹为观止！</p><p>因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！</p><p>工作中，当业务量比较小的时候，用的机器也少，体会不到性能优化带来的收益。而当一个业务使用了几千台机器的时候，性能优化 20%，那就能省下几百台机器，一年能省几百万。省下来的这些钱，给员工发年终奖，那得多 Happy！</p><p>一般而言，性能分析可以从三个层次来考虑：应用层、系统层、代码层。</p><p>应用层主要是梳理业务方的使用方式，让他们更合理地使用，在满足使用方需求的前提下，减少无意义的调用；系统层关注服务的架构，例如增加一层缓存；代码层则关心函数的执行效率，例如使用效率更高的开方算法等。</p><p>做任何事，都要讲究方法。在很多情况下，迅速把事情最关键的部分完成，就能拿到绝大部分的收益了。其他的一些边边角角，可以慢慢地缝合。一上来就想完成 100%，往往会陷入付出了巨大的努力，却收获寥寥的境地。</p><p>性能优化这件事也一样，识别出性能瓶颈，会让我们付出最小的努力，而得到最大的回报。</p><p>Go 语言里，pprof 就是这样一个工具，帮助我们快速找到性能瓶颈，进而进行有针对性地优化。</p></div><div class="post-more-link text-center"><a class=btn href=https://yeplain.xyz/post/pprof/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/sql-learning/ itemprop=url>SQL复习</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=leancloud-view-count>6分钟</span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/pprof9.png alt=image-20220706141900554></p><p>相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 <code>1/sqrt(x)</code> 这个函数的执行效率优化到了极致。</p><p>一般我们使用二分法，或者牛顿迭代法计算一个浮点数的平方根。但在这个函数里，作者使用了一个“魔数”，根本没有迭代，两步就直接算出了平方根。令人叹为观止！</p><p>因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！</p></div><div class="post-more-link text-center"><a class=btn href=https://yeplain.xyz/post/pprof/ rel=contents>阅读全文 &#187;</a></div><footer class=post-footer><div class=post-eof></div></footer></article><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/sql-learning/ itemprop=url>SQL复习</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
 <time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-06-30">2022-06-30</time></span>
 <span class=post-category><i class="fa fa-folder-o fa-fw"></i>
@@ -75,7 +75,7 @@
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>19</span>
 <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>7</span>
-<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>17</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>18</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="feed-link motion-element"><a href=/index.xml rel=alternate type=application/rss+xml target=_blank><i class="fa fa-rss"></i>
 RSS 订阅</a></div><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
 GitHub</a></span>
@@ -87,7 +87,7 @@ Instagram</a></span>
 Email</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
-<sup>4</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
+<sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/blog>Blog
