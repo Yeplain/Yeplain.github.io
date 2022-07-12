@@ -1,6 +1,55 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
-相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 1/sqrt(x) 这个函数的执行效率优化到了极致。
-因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！</content></entry><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>K8s原理与kubectl</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>K8s</category></categories><tags><tag>k8s</tag></tags><content type="html">
+Kubernetes 这个名字源于希腊语，意为“舵手”或“飞行员”，简称 k8s，8代表中间的八个字符 Google 在 2014 年开源了 Kubernetes 项目，是Google基于Borg开源的容器编排调度引擎。
+在实习中，需要对probe-server的各个容器的状态进行监控，从而尽早定位问题，解决问题。
+介绍 DevOps DevOps（Development和Operations的组合词）是一组过程、方法与系统的统称，用于促进开发（应用程序/软件工程）、技术运营和质量保障（QA）部门之间的沟通、协作与整合。
+它是一种重视“软件开发人员（Dev）”和“IT运维技术人员（Ops）”之间沟通合作的文化、运动或惯例。透过自动化“软件交付”和“架构变更”的流程，来使得构建、测试、发布软件能够更加地快捷、频繁和可靠。
+它的出现是由于软件行业日益清晰地认识到：为了按时交付软件产品和服务，开发和运营工作必须紧密合作。
+应用部署方式的演变 在部署应用程序的方式上，主要经历了三个时代：
+传统部署：互联网早期，会直接将应用程序部署在物理机上 ​ 优点：简单，不需要其它技术的参与
+​ 缺点：不能为应用程序定义资源使用边界，很难合理地分配计算资源，而且程序之间容易产生影响
+虚拟化部署：可以在一台物理机上运行多个虚拟机，每个虚拟机都是独立的一个环境 ​ 优点：程序环境不会相互产生影响，提供了一定程度的安全性
+​ 缺点：增加了操作系统，浪费了部分资源
+容器化部署：与虚拟化类似，但是共享了操作系统 ​ 优点：
+​ 可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等
+​ 运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦
+​ 容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署
+容器化部署方式给带来很多的便利，但是也会出现一些问题，比如说：
+一个容器故障停机了，怎么样让另外一个容器立刻启动去替补停机的容器 当并发访问量变大的时候，怎么样做到横向扩展容器数量 这些容器管理的问题统称为容器编排问题，为了解决这些容器编排问题，就产生了一些容器编排的软件：
+​ Swarm：Docker自己的容器编排工具 ​ Mesos：Apache的一个资源统一管控的工具，需要和Marathon结合使用 ​ Kubernetes：Google开源的的容器编排工具
+kubernetes的本质是一组服务器集群，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：
+​ 自我修复：一旦某一个容器崩溃，能够在1秒中左右迅速启动新的容器 ​ 弹性伸缩：可以根据需要，自动对集群中正在运行的容器数量进行调整 ​ 服务发现：服务可以通过自动发现的形式找到它所依赖的服务 ​ 负载均衡：如果一个服务起动了多个容器，能够自动实现请求的负载均衡 ​ 版本回退：如果发现新发布的程序版本有问题，可以立即回退到原来的版本 ​ 存储编排：可以根据容器自身的需求自动创建存储卷
+kubernetes组件 一个kubernetes集群主要是由控制节点(master)、**工作节点(node)**构成，每个节点上都会安装不同的组件。
+master 集群的控制平面，负责集群的决策 ( 管理 )
+ApiServer : 资源操作的唯一入口，接收用户输入的命令，提供认证、授权、API注册和发现等机制 Scheduler : 负责集群资源调度，按照预定的调度策略将Pod调度到相应的node节点上 ControllerManager : 负责维护集群的状态，比如程序部署安排、故障检测、自动扩展、滚动更新等 Etcd ：负责存储集群中各种资源对象的信息 node 集群的数据平面，负责为容器提供运行环境 ( 干活 )
+Kubelet : 负责维护容器的生命周期，即通过控制docker，来创建、更新、销毁容器 KubeProxy : 负责提供集群内部的服务发现和负载均衡 Docker : 负责节点上容器的各种操作 其他 Master：集群控制节点，每个集群需要至少一个master节点负责集群的管控
+Node：工作负载节点，由master分配容器到这些node工作节点上，然后node节点上的docker负责容器的运行
+Pod：kubernetes的最小控制单元，容器都是运行在pod中的，一个pod中可以有1个或者多个容器
+Controller：控制器，通过它来实现对pod的管理，比如启动pod、停止pod、伸缩pod的数量等等
+Service：pod对外服务的统一入口，下面可以维护者同一类的多个pod
+Label：标签，用于对pod进行分类，同一类pod会拥有相同的标签
+NameSpace：命名空间，用来隔离pod的运行环境
+node、pod、container，service之间的关系 在Kubernetes中，最小的管理元素不是一个个独立的容器，而是Pod
+Pod是最小的，管理，创建，计划的最小单元.
+一个Pod相当于一个共享context的配置组，在同一个context下，应用可能还会有独立的cgroup隔离机制，一个Pod是一个容器环境下的“逻辑主机”，它可能包含一个或者多个紧密相连的应用，这些应用可能是在同一个物理主机或虚拟机上。
+同一个Pod中的应用可以共享磁盘，磁盘是Pod级的，应用可以通过文件系统调用。
+Node是Pod真正运行的主机，可以物理机，也可以是虚拟机。
+当我们讨论 k8s 时总是会讨论集群，k8s 中的每个集群由多个机器/虚拟机组成，集群也被称为 命名空间(namespace)，命名空间是虚拟的，因此也叫虚拟集群。
+Namespace 是对一组资源和对象的抽象集合。
+node 是集群中的单个机器/虚拟机，node 有两种，一种是 master ，一种是 worker。master 用来运行 kubernetes 服务，例如 API Server；worker 是真正工作的节点，用来运行你的容器。
+master 节点控制其它节点，向 worker 节点发送消息，将工作分配给他们，worker 节点向 master 节点汇报工作。
+每个节点上运行着多个服务，有时 服务A 和 服务B 是关联起来的，需要一起启动一起注销，那么可以设置为一个 pod。pod 是逻辑分组，是 k8s 中独立的、隔离的最小的工作单元。pod 中可以有一个或多个容器/服务，pod 允许你把多个容器结合起来，指导这些容器如何组合创建应用程序。
+多个 pod 可以组成一个 service ，service 提供了一个单一的 IP 地址和 DNS 名称，可以通过它访问 service 内的所有 pod。有了 service 我们可以很容易的设置和管理负载均衡。
+kubectl 1. namespace Namespace是kubernetes系统中的一种非常重要资源，它的主要作用是用来实现多套环境的资源隔离或者多租户的资源隔离。
+默认情况下，kubernetes集群中的所有的Pod都是可以相互访问的。但是在实际中，可能不想让两个Pod之间进行互相的访问，那此时就可以将两个Pod划分到不同的namespace下。kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的"组"，以方便不同的组的资源进行隔离使用和管理。
+可以通过kubernetes的授权机制，将不同的namespace交给不同租户进行管理，这样就实现了多租户的资源隔离。此时还能结合kubernetes的资源配额机制，限定不同租户能占用的资源，例如CPU使用量、内存使用量等等，来实现租户可用资源的管理。
+[root@master ~]# kubectl get namespace NAME STATUS AGE default Active 45h # 所有未指定Namespace的对象都会被分配在default命名空间 kube-node-lease Active 45h # 集群节点之间的心跳维护，v1.13开始引入 kube-public Active 45h # 此命名空间下的资源可以被所有人访问（包括未认证用户） kube-system Active 45h # 所有由Kubernetes系统创建的资源都处于这个命名空间 查看 # 1 查看所有的ns 命令：kubectl get ns [root@master ~]# kubectl get ns NAME STATUS AGE default Active 45h kube-node-lease Active 45h kube-public Active 45h kube-system Active 45h # 2 查看指定的ns 命令：kubectl get ns ns名称 [root@master ~]# kubectl get ns default NAME STATUS AGE default Active 45h # 3 指定输出格式 命令：kubectl get ns ns名称 -o 格式参数 # kubernetes支持的格式有很多，比较常见的是wide、json、yaml [root@master ~]# kubectl get ns default -o yaml apiVersion: v1 kind: Namespace metadata: creationTimestamp: "2021-05-08T04:44:16Z" name: default resourceVersion: "151" selfLink: /api/v1/namespaces/default uid: 7405f73a-e486-43d4-9db6-145f1409f090 spec: finalizers: - kubernetes status: phase: Active # 4 查看ns详情 命令：kubectl describe ns ns名称 [root@master ~]# kubectl describe ns default Name: default Labels: &lt;none> Annotations: &lt;none> Status: Active # Active 命名空间正在使用中 Terminating 正在删除命名空间 # ResourceQuota 针对namespace做的资源限制 # LimitRange针对namespace中的每个组件做的资源限制 No resource quota. No LimitRange resource. 创建 # 创建namespace [root@master ~]# kubectl create ns dev namespace/dev created 删除 # 删除namespace [root@master ~]# kubectl delete ns dev namespace "dev" deleted 2.pod Pod是kubernetes集群进行管理的最小单元，程序要运行必须部署在容器中，而容器必须存在于Pod中。
+Pod可以认为是容器的封装，一个Pod中可以存在一个或者多个容器。
+查看 # 查看Pod基本信息 [root@master ~]# kubectl get pods -n dev NAME READY STATUS RESTARTS AGE nginx 1/1 Running 0 43s # 查看Pod的详细信息 [root@master ~]# kubectl describe pod nginx -n dev Name: nginx Namespace: dev Priority: 0 Node: node1/192.168.5.4 Start Time: Wed, 08 May 2021 09:29:24 +0800 Labels: pod-template-hash=5ff7956ff6 run=nginx Annotations: &lt;none> Status: Running IP: 10.244.1.23 IPs: IP: 10.244.1.23 Controlled By: ReplicaSet/nginx Containers: nginx: Container ID: docker://4c62b8c0648d2512380f4ffa5da2c99d16e05634979973449c98e9b829f6253c Image: nginx:latest Image ID: docker-pullable://nginx@sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7 Port: 80/TCP Host Port: 0/TCP State: Running Started: Wed, 08 May 2021 09:30:01 +0800 Ready: True Restart Count: 0 Environment: &lt;none> Mounts: /var/run/secrets/kubernetes.io/serviceaccount from default-token-hwvvw (ro) Conditions: Type Status Initialized True Ready True ContainersReady True PodScheduled True Volumes: default-token-hwvvw: Type: Secret (a volume populated by a Secret) SecretName: default-token-hwvvw Optional: false QoS Class: BestEffort Node-Selectors: &lt;none> Tolerations: node.kubernetes.io/not-ready:NoExecute for 300s node.kubernetes.io/unreachable:NoExecute for 300s Events: Type Reason Age From Message ---- ------ ---- ---- ------- Normal Scheduled &lt;unknown> default-scheduler Successfully assigned dev/nginx-5ff7956ff6-fg2db to node1 Normal Pulling 4m11s kubelet, node1 Pulling image "nginx:latest" Normal Pulled 3m36s kubelet, node1 Successfully pulled image "nginx:latest" Normal Created 3m36s kubelet, node1 Created container nginx Normal Started 3m36s kubelet, node1 Started container nginx 3. service 虽然每个Pod都会分配一个单独的Pod IP，然而却存在如下两问题：
+Pod IP 会随着Pod的重建产生变化 Pod IP 仅仅是集群内可见的虚拟IP，外部无法访问 这样对于访问这个服务带来了难度。因此，kubernetes设计了Service来解决这个问题。
+Service可以看作是一组同类Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。
+# 暴露Service [root@master ~]# kubectl expose deploy nginx --name=svc-nginx1 --type=ClusterIP --port=80 --target-port=80 -n dev service/svc-nginx1 exposed # 查看service [root@master ~]# kubectl get svc svc-nginx1 -n dev -o wide NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE SELECTOR svc-nginx1 ClusterIP 10.109.179.231 &lt;none> 80/TCP 3m51s run=nginx # 这里产生了一个CLUSTER-IP，这就是service的IP，在Service的生命周期中，这个地址是不会变动的 # 可以通过这个IP访问当前service对应的POD [root@master ~]# curl 10.109.179.231:80 &lt;!DOCTYPE html> &lt;html> &lt;head> &lt;title>Welcome to nginx!&lt;/title> &lt;/head> &lt;body> &lt;h1>Welcome to nginx!&lt;/h1> ....... &lt;/body> &lt;/html> 实战 实习中，需要我对probe-server的运行情况进行监控：
+先看grafana曲线，若出现问题，则
+kubectl get pods|grep ref #看重启 kubectl top pods|grep ref #看负载 kubectl logs [pods名] --previous --tail 100 #看日志报错</content></entry><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
 相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 1/sqrt(x) 这个函数的执行效率优化到了极致。
 因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！
 工作中，当业务量比较小的时候，用的机器也少，体会不到性能优化带来的收益。而当一个业务使用了几千台机器的时候，性能优化 20%，那就能省下几百台机器，一年能省几百万。省下来的这些钱，给员工发年终奖，那得多 Happy！

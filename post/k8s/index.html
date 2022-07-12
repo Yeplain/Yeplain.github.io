@@ -1,25 +1,176 @@
-<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>go语言中的pprof研究与应用 - 野生菌のBlog</title><meta name=keywords content="博客,程序员,深度学习,Golang开发,思考,读书,笔记,技术,分享,"><meta name=author content="野生菌"><meta property="og:title" content="go语言中的pprof研究与应用"><meta property="og:site_name" content="野生菌のBlog"><meta property="og:image" content="https://yeplain.xyz/img/author.jpg"><meta name=title content="go语言中的pprof研究与应用 - 野生菌のBlog"><meta name=description content="欢迎来到野生菌的博客"><link rel="shortcut icon" href=https://yeplain.xyz/img/favicon.ico><link rel=apple-touch-icon href=https://yeplain.xyz/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://yeplain.xyz/img/apple-touch-icon.png><link href=//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.css rel=stylesheet><link href=https://yeplain.xyz/css/main.css rel=stylesheet type=text/css><link href=https://yeplain.xyz/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>K8s原理与kubectl - 野生菌のBlog</title><meta name=keywords content="博客,程序员,深度学习,Golang开发,思考,读书,笔记,技术,分享,"><meta name=author content="野生菌"><meta property="og:title" content="K8s原理与kubectl"><meta property="og:site_name" content="野生菌のBlog"><meta property="og:image" content="https://yeplain.xyz/img/author.jpg"><meta name=title content="K8s原理与kubectl - 野生菌のBlog"><meta name=description content="欢迎来到野生菌的博客"><link rel="shortcut icon" href=https://yeplain.xyz/img/favicon.ico><link rel=apple-touch-icon href=https://yeplain.xyz/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://yeplain.xyz/img/apple-touch-icon.png><link href=//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.css rel=stylesheet><link href=https://yeplain.xyz/css/main.css rel=stylesheet type=text/css><link href=https://yeplain.xyz/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
 <span class=toggle-line></span>
 <span class=toggle-line></span></div></div><div class=site-meta><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
 <span class=site-title>野生菌のBlog</span>
 <span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>代码的世界需要野生菌来发酵</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-active"><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>目录</a></li><li class=menu-item><a href=/categories rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>分类</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
-<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/k8s/ itemprop=url>go语言中的pprof研究与应用</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://yeplain.xyz/post/k8s/ itemprop=url>K8s原理与kubectl</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
 <span class=post-meta-item-text>时间：</span>
-<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-07-06">2022-07-06</time></span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-07-07">2022-07-07</time></span>
 <span class=post-category><i class="fa fa-folder-o fa-fw"></i>
 <span class=post-meta-item-text>分类：</span>
-<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/golang itemprop=url rel=index><span itemprop=name>Golang</span></a>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a class=post-category-a href=/categories/k8s itemprop=url rel=index><span itemprop=name>K8s</span></a>
 &nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>123 字</span></span>
+<span class=leancloud-world-count>4060 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>1分钟</span></span>
-<span id=/post/k8s/ class="leancloud_visitors post-visitor" data-flag-title=go语言中的pprof研究与应用><i class="fa fa-binoculars fa-fw"></i>
+<span class=leancloud-view-count>9分钟</span></span>
+<span id=/post/k8s/ class="leancloud_visitors post-visitor" data-flag-title=K8s原理与kubectl><i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
-<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/pprof9.png alt=image-20220706141900554></p><p>相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 <code>1/sqrt(x)</code> 这个函数的执行效率优化到了极致。</p><p>因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！</p></div><footer class=post-footer><div class=post-tags><a href=/tags/golang rel=tag title=Golang>#Golang#</a>
-<a href=/tags/pprof rel=tag title=pprof>#pprof#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/pprof/ rel=prev title=go语言中的pprof研究与应用>go语言中的pprof研究与应用
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/k8s1.png alt="Kubernetes — Architecture and Cluster Components Overview | DevOps Mojo"></p><p>Kubernetes 这个名字源于希腊语，意为“舵手”或“飞行员”，简称 k8s，8代表中间的八个字符
+Google 在 2014 年开源了 Kubernetes 项目，是Google基于Borg开源的容器编排调度引擎。</p><p>在实习中，需要对probe-server的各个容器的状态进行监控，从而尽早定位问题，解决问题。</p><h2 id=介绍>介绍</h2><p><img src=/images/k8s2.png alt></p><h3 id=devops>DevOps</h3><p>DevOps（Development和Operations的组合词）是一组过程、方法与系统的统称，用于促进开发（应用程序/软件工程）、技术运营和质量保障（QA）部门之间的沟通、协作与整合。</p><p>它是一种重视“软件开发人员（Dev）”和“IT运维技术人员（Ops）”之间沟通合作的文化、运动或惯例。透过自动化“软件交付”和“架构变更”的流程，来使得构建、测试、发布软件能够更加地快捷、频繁和可靠。</p><p>它的出现是由于软件行业日益清晰地认识到：为了按时交付软件产品和服务，开发和运营工作必须紧密合作。</p><h3 id=应用部署方式的演变>应用部署方式的演变</h3><p>在部署应用程序的方式上，主要经历了三个时代：</p><ol><li><strong>传统部署</strong>：互联网早期，会直接将应用程序部署在物理机上</li></ol><p>​ 优点：简单，不需要其它技术的参与</p><p>​ 缺点：不能为应用程序定义资源使用边界，很难合理地分配计算资源，而且程序之间容易产生影响</p><ol start=2><li><strong>虚拟化部署</strong>：可以在一台物理机上运行多个虚拟机，每个虚拟机都是独立的一个环境</li></ol><p>​ 优点：程序环境不会相互产生影响，提供了一定程度的安全性</p><p>​ 缺点：增加了操作系统，浪费了部分资源</p><ol start=3><li><strong>容器化部署</strong>：与虚拟化类似，但是共享了操作系统</li></ol><p>​ 优点：</p><p>​ 可以保证每个容器拥有自己的文件系统、CPU、内存、进程空间等</p><p>​ 运行应用程序所需要的资源都被容器包装，并和底层基础架构解耦</p><p>​ 容器化的应用程序可以跨云服务商、跨Linux操作系统发行版进行部署</p><p>容器化部署方式给带来很多的便利，但是也会出现一些问题，比如说：</p><ol><li>一个容器故障停机了，怎么样让另外一个容器立刻启动去替补停机的容器</li><li>当并发访问量变大的时候，怎么样做到横向扩展容器数量</li></ol><p>这些容器管理的问题统称为容器编排问题，为了解决这些容器编排问题，就产生了一些容器编排的软件：</p><p>​ Swarm：Docker自己的容器编排工具
+​ Mesos：Apache的一个资源统一管控的工具，需要和Marathon结合使用
+​ Kubernetes：Google开源的的容器编排工具</p><p>kubernetes的本质是一组服务器集群，它可以在集群的每个节点上运行特定的程序，来对节点中的容器进行管理。目的是实现资源管理的自动化，主要提供了如下的主要功能：</p><p>​ <strong>自我修复</strong>：一旦某一个容器崩溃，能够在1秒中左右迅速启动新的容器
+​ <strong>弹性伸缩</strong>：可以根据需要，自动对集群中正在运行的容器数量进行调整
+​ <strong>服务发现</strong>：服务可以通过自动发现的形式找到它所依赖的服务
+​ <strong>负载均衡</strong>：如果一个服务起动了多个容器，能够自动实现请求的负载均衡
+​ <strong>版本回退</strong>：如果发现新发布的程序版本有问题，可以立即回退到原来的版本
+​ <strong>存储编排</strong>：可以根据容器自身的需求自动创建存储卷</p><h2 id=kubernetes组件>kubernetes组件</h2><p>一个kubernetes集群主要是由<strong>控制节点(master)</strong>、**工作节点(node)**构成，每个节点上都会安装不同的组件。</p><h3 id=master>master</h3><p><strong>集群的控制平面，负责集群的决策 ( 管理 )</strong></p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>ApiServer : 资源操作的唯一入口，接收用户输入的命令，提供认证、授权、API注册和发现等机制
+</span></span><span style=display:flex><span>Scheduler : 负责集群资源调度，按照预定的调度策略将Pod调度到相应的node节点上
+</span></span><span style=display:flex><span>ControllerManager : 负责维护集群的状态，比如程序部署安排、故障检测、自动扩展、滚动更新等
+</span></span><span style=display:flex><span>Etcd ：负责存储集群中各种资源对象的信息
+</span></span></code></pre></div><h3 id=node>node</h3><p><strong>集群的数据平面，负责为容器提供运行环境 ( 干活 )</strong></p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback><span style=display:flex><span>Kubelet : 负责维护容器的生命周期，即通过控制docker，来创建、更新、销毁容器
+</span></span><span style=display:flex><span>KubeProxy : 负责提供集群内部的服务发现和负载均衡
+</span></span><span style=display:flex><span>Docker : 负责节点上容器的各种操作
+</span></span></code></pre></div><h3 id=其他>其他</h3><p><strong>Master</strong>：集群控制节点，每个集群需要至少一个master节点负责集群的管控</p><p><strong>Node</strong>：工作负载节点，由master分配容器到这些node工作节点上，然后node节点上的docker负责容器的运行</p><p><strong>Pod</strong>：kubernetes的最小控制单元，容器都是运行在pod中的，一个pod中可以有1个或者多个容器</p><p><strong>Controller</strong>：控制器，通过它来实现对pod的管理，比如启动pod、停止pod、伸缩pod的数量等等</p><p><strong>Service</strong>：pod对外服务的统一入口，下面可以维护者同一类的多个pod</p><p><strong>Label</strong>：标签，用于对pod进行分类，同一类pod会拥有相同的标签</p><p><strong>NameSpace</strong>：命名空间，用来隔离pod的运行环境</p><h3 id=nodepodcontainerservice之间的关系>node、pod、container，service之间的关系</h3><p>在Kubernetes中，最小的管理元素不是一个个独立的容器，而是Pod</p><p><strong>Pod</strong>是最小的，管理，创建，计划的最小单元.</p><p>一个Pod相当于一个共享context的配置组，在同一个context下，应用可能还会有独立的cgroup隔离机制，一个Pod是一个容器环境下的“逻辑主机”，它可能包含一个或者多个紧密相连的应用，这些应用可能是在同一个物理主机或虚拟机上。</p><p>同一个Pod中的应用可以共享磁盘，磁盘是Pod级的，应用可以通过文件系统调用。</p><p><strong>Node</strong>是Pod真正运行的主机，可以物理机，也可以是虚拟机。</p><p><img src=/images/k8s3.jpg alt=img></p><p>当我们讨论 k8s 时总是会讨论集群，k8s 中的每个集群由多个机器/虚拟机组成，集群也被称为 命名空间(namespace)，命名空间是虚拟的，因此也叫虚拟集群。</p><p>Namespace 是对一组资源和对象的抽象集合。</p><p>node 是集群中的单个机器/虚拟机，node 有两种，一种是 master ，一种是 worker。master 用来运行 kubernetes 服务，例如 API Server；worker 是真正工作的节点，用来运行你的容器。</p><p>master 节点控制其它节点，向 worker 节点发送消息，将工作分配给他们，worker 节点向 master 节点汇报工作。</p><p>每个节点上运行着多个服务，有时 服务A 和 服务B 是关联起来的，需要一起启动一起注销，那么可以设置为一个 pod。pod 是逻辑分组，是 k8s 中独立的、隔离的最小的工作单元。pod 中可以有一个或多个容器/服务，pod 允许你把多个容器结合起来，指导这些容器如何组合创建应用程序。</p><p>多个 pod 可以组成一个 service ，service 提供了一个单一的 IP 地址和 DNS 名称，可以通过它访问 service 内的所有 pod。有了 service 我们可以很容易的设置和管理负载均衡。</p><h2 id=kubectl>kubectl</h2><h3 id=1-namespace>1. namespace</h3><p>Namespace是kubernetes系统中的一种非常重要资源，它的主要作用是用来实现多套环境的资源隔离或者多租户的资源隔离。</p><p>默认情况下，kubernetes集群中的所有的Pod都是可以相互访问的。但是在实际中，可能不想让两个Pod之间进行互相的访问，那此时就可以将两个Pod划分到不同的namespace下。kubernetes通过将集群内部的资源分配到不同的Namespace中，可以形成逻辑上的"组"，以方便不同的组的资源进行隔离使用和管理。</p><p>可以通过kubernetes的授权机制，将不同的namespace交给不同租户进行管理，这样就实现了多租户的资源隔离。此时还能结合kubernetes的资源配额机制，限定不同租户能占用的资源，例如CPU使用量、内存使用量等等，来实现租户可用资源的管理。</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl  get namespace</span>
+</span></span><span style=display:flex><span>NAME              STATUS   AGE
+</span></span><span style=display:flex><span>default           Active   45h     <span style=color:#080;font-style:italic>#  所有未指定Namespace的对象都会被分配在default命名空间</span>
+</span></span><span style=display:flex><span>kube-node-lease   Active   45h     <span style=color:#080;font-style:italic>#  集群节点之间的心跳维护，v1.13开始引入</span>
+</span></span><span style=display:flex><span>kube-public       Active   45h     <span style=color:#080;font-style:italic>#  此命名空间下的资源可以被所有人访问（包括未认证用户）</span>
+</span></span><span style=display:flex><span>kube-system       Active   45h     <span style=color:#080;font-style:italic>#  所有由Kubernetes系统创建的资源都处于这个命名空间</span>
+</span></span></code></pre></div><h4 id=查看>查看</h4><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 1 查看所有的ns  命令：kubectl get ns</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl get ns</span>
+</span></span><span style=display:flex><span>NAME              STATUS   AGE
+</span></span><span style=display:flex><span>default           Active   45h
+</span></span><span style=display:flex><span>kube-node-lease   Active   45h
+</span></span><span style=display:flex><span>kube-public       Active   45h     
+</span></span><span style=display:flex><span>kube-system       Active   45h     
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 2 查看指定的ns   命令：kubectl get ns ns名称</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl get ns default</span>
+</span></span><span style=display:flex><span>NAME      STATUS   AGE
+</span></span><span style=display:flex><span>default   Active   45h
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 3 指定输出格式  命令：kubectl get ns ns名称  -o 格式参数</span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># kubernetes支持的格式有很多，比较常见的是wide、json、yaml</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl get ns default -o yaml</span>
+</span></span><span style=display:flex><span>apiVersion: v1
+</span></span><span style=display:flex><span>kind: Namespace
+</span></span><span style=display:flex><span>metadata:
+</span></span><span style=display:flex><span>  creationTimestamp: <span style=color:#b44>&#34;2021-05-08T04:44:16Z&#34;</span>
+</span></span><span style=display:flex><span>  name: default
+</span></span><span style=display:flex><span>  resourceVersion: <span style=color:#b44>&#34;151&#34;</span>
+</span></span><span style=display:flex><span>  selfLink: /api/v1/namespaces/default
+</span></span><span style=display:flex><span>  uid: 7405f73a-e486-43d4-9db6-145f1409f090
+</span></span><span style=display:flex><span>spec:
+</span></span><span style=display:flex><span>  finalizers:
+</span></span><span style=display:flex><span>  - kubernetes
+</span></span><span style=display:flex><span>status:
+</span></span><span style=display:flex><span>  phase: Active
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 4 查看ns详情  命令：kubectl describe ns ns名称</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl describe ns default</span>
+</span></span><span style=display:flex><span>Name:         default
+</span></span><span style=display:flex><span>Labels:       &lt;none&gt;
+</span></span><span style=display:flex><span>Annotations:  &lt;none&gt;
+</span></span><span style=display:flex><span>Status:       Active  <span style=color:#080;font-style:italic># Active 命名空间正在使用中  Terminating 正在删除命名空间</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># ResourceQuota 针对namespace做的资源限制</span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># LimitRange针对namespace中的每个组件做的资源限制</span>
+</span></span><span style=display:flex><span>No resource quota.
+</span></span><span style=display:flex><span>No LimitRange resource.
+</span></span></code></pre></div><h4 id=创建>创建</h4><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 创建namespace</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl create ns dev</span>
+</span></span><span style=display:flex><span>namespace/dev created
+</span></span></code></pre></div><h4 id=删除>删除</h4><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 删除namespace</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl delete ns dev</span>
+</span></span><span style=display:flex><span>namespace <span style=color:#b44>&#34;dev&#34;</span> deleted
+</span></span></code></pre></div><h3 id=2pod>2.pod</h3><p>Pod是kubernetes集群进行管理的最小单元，程序要运行必须部署在容器中，而容器必须存在于Pod中。</p><p>Pod可以认为是容器的封装，一个Pod中可以存在一个或者多个容器。</p><h4 id=查看-1>查看</h4><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 查看Pod基本信息</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl get pods -n dev</span>
+</span></span><span style=display:flex><span>NAME    READY   STATUS    RESTARTS   AGE
+</span></span><span style=display:flex><span>nginx   1/1     Running   <span style=color:#666>0</span>          43s
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 查看Pod的详细信息</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl describe pod nginx -n dev</span>
+</span></span><span style=display:flex><span>Name:         nginx
+</span></span><span style=display:flex><span>Namespace:    dev
+</span></span><span style=display:flex><span>Priority:     <span style=color:#666>0</span>
+</span></span><span style=display:flex><span>Node:         node1/192.168.5.4
+</span></span><span style=display:flex><span>Start Time:   Wed, <span style=color:#666>08</span> May <span style=color:#666>2021</span> 09:29:24 +0800
+</span></span><span style=display:flex><span>Labels:       pod-template-hash<span style=color:#666>=</span>5ff7956ff6
+</span></span><span style=display:flex><span>              <span style=color:#b8860b>run</span><span style=color:#666>=</span>nginx
+</span></span><span style=display:flex><span>Annotations:  &lt;none&gt;
+</span></span><span style=display:flex><span>Status:       Running
+</span></span><span style=display:flex><span>IP:           10.244.1.23
+</span></span><span style=display:flex><span>IPs:
+</span></span><span style=display:flex><span>  IP:           10.244.1.23
+</span></span><span style=display:flex><span>Controlled By:  ReplicaSet/nginx
+</span></span><span style=display:flex><span>Containers:
+</span></span><span style=display:flex><span>  nginx:
+</span></span><span style=display:flex><span>    Container ID:   docker://4c62b8c0648d2512380f4ffa5da2c99d16e05634979973449c98e9b829f6253c
+</span></span><span style=display:flex><span>    Image:          nginx:latest
+</span></span><span style=display:flex><span>    Image ID:       docker-pullable://nginx@sha256:485b610fefec7ff6c463ced9623314a04ed67e3945b9c08d7e53a47f6d108dc7
+</span></span><span style=display:flex><span>    Port:           80/TCP
+</span></span><span style=display:flex><span>    Host Port:      0/TCP
+</span></span><span style=display:flex><span>    State:          Running
+</span></span><span style=display:flex><span>      Started:      Wed, <span style=color:#666>08</span> May <span style=color:#666>2021</span> 09:30:01 +0800
+</span></span><span style=display:flex><span>    Ready:          True
+</span></span><span style=display:flex><span>    Restart Count:  <span style=color:#666>0</span>
+</span></span><span style=display:flex><span>    Environment:    &lt;none&gt;
+</span></span><span style=display:flex><span>    Mounts:
+</span></span><span style=display:flex><span>      /var/run/secrets/kubernetes.io/serviceaccount from default-token-hwvvw <span style=color:#666>(</span>ro<span style=color:#666>)</span>
+</span></span><span style=display:flex><span>Conditions:
+</span></span><span style=display:flex><span>  Type              Status
+</span></span><span style=display:flex><span>  Initialized       True
+</span></span><span style=display:flex><span>  Ready             True
+</span></span><span style=display:flex><span>  ContainersReady   True
+</span></span><span style=display:flex><span>  PodScheduled      True
+</span></span><span style=display:flex><span>Volumes:
+</span></span><span style=display:flex><span>  default-token-hwvvw:
+</span></span><span style=display:flex><span>    Type:        Secret <span style=color:#666>(</span>a volume populated by a Secret<span style=color:#666>)</span>
+</span></span><span style=display:flex><span>    SecretName:  default-token-hwvvw
+</span></span><span style=display:flex><span>    Optional:    <span style=color:#a2f>false</span>
+</span></span><span style=display:flex><span>QoS Class:       BestEffort
+</span></span><span style=display:flex><span>Node-Selectors:  &lt;none&gt;
+</span></span><span style=display:flex><span>Tolerations:     node.kubernetes.io/not-ready:NoExecute <span style=color:#a2f;font-weight:700>for</span> 300s
+</span></span><span style=display:flex><span>                 node.kubernetes.io/unreachable:NoExecute <span style=color:#a2f;font-weight:700>for</span> 300s
+</span></span><span style=display:flex><span>Events:
+</span></span><span style=display:flex><span>  Type    Reason     Age        From               Message
+</span></span><span style=display:flex><span>  ----    ------     ----       ----               -------
+</span></span><span style=display:flex><span>  Normal  Scheduled  &lt;unknown&gt;  default-scheduler  Successfully assigned dev/nginx-5ff7956ff6-fg2db to node1
+</span></span><span style=display:flex><span>  Normal  Pulling    4m11s      kubelet, node1     Pulling image <span style=color:#b44>&#34;nginx:latest&#34;</span>
+</span></span><span style=display:flex><span>  Normal  Pulled     3m36s      kubelet, node1     Successfully pulled image <span style=color:#b44>&#34;nginx:latest&#34;</span>
+</span></span><span style=display:flex><span>  Normal  Created    3m36s      kubelet, node1     Created container nginx
+</span></span><span style=display:flex><span>  Normal  Started    3m36s      kubelet, node1     Started container nginx
+</span></span></code></pre></div><h3 id=3-service>3. service</h3><p>虽然每个Pod都会分配一个单独的Pod IP，然而却存在如下两问题：</p><p>Pod IP 会随着Pod的重建产生变化
+Pod IP 仅仅是集群内可见的虚拟IP，外部无法访问
+这样对于访问这个服务带来了难度。因此，kubernetes设计了Service来解决这个问题。</p><p>Service可以看作是一组同类Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span><span style=color:#080;font-style:italic># 暴露Service</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl expose deploy nginx --name=svc-nginx1 --type=ClusterIP --port=80 --target-port=80 -n dev</span>
+</span></span><span style=display:flex><span>service/svc-nginx1 exposed
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 查看service</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># kubectl get svc svc-nginx1 -n dev -o wide</span>
+</span></span><span style=display:flex><span>NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT<span style=color:#666>(</span>S<span style=color:#666>)</span>   AGE     SELECTOR
+</span></span><span style=display:flex><span>svc-nginx1   ClusterIP   10.109.179.231   &lt;none&gt;        80/TCP    3m51s   <span style=color:#b8860b>run</span><span style=color:#666>=</span>nginx
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 这里产生了一个CLUSTER-IP，这就是service的IP，在Service的生命周期中，这个地址是不会变动的</span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># 可以通过这个IP访问当前service对应的POD</span>
+</span></span><span style=display:flex><span><span style=color:#666>[</span>root@master ~<span style=color:#666>]</span><span style=color:#080;font-style:italic># curl 10.109.179.231:80</span>
+</span></span><span style=display:flex><span>&lt;!DOCTYPE html&gt;
+</span></span><span style=display:flex><span>&lt;html&gt;
+</span></span><span style=display:flex><span>&lt;head&gt;
+</span></span><span style=display:flex><span>&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+</span></span><span style=display:flex><span>&lt;/head&gt;
+</span></span><span style=display:flex><span>&lt;body&gt;
+</span></span><span style=display:flex><span>&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+</span></span><span style=display:flex><span>.......
+</span></span><span style=display:flex><span>&lt;/body&gt;
+</span></span><span style=display:flex><span>&lt;/html&gt;
+</span></span></code></pre></div><h2 id=实战>实战</h2><p>实习中，需要我对probe-server的运行情况进行监控：</p><p>先看grafana曲线，若出现问题，则</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl get pods|grep ref    <span style=color:#080;font-style:italic>#看重启</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl top pods|grep ref    <span style=color:#080;font-style:italic>#看负载</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=display:flex><span>kubectl logs <span style=color:#666>[</span>pods名<span style=color:#666>]</span> --previous --tail <span style=color:#666>100</span>    <span style=color:#080;font-style:italic>#看日志报错</span>
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/k8s rel=tag title=k8s>#k8s#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/pprof/ rel=prev title=go语言中的pprof研究与应用>go语言中的pprof研究与应用
 <i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>20</span>
@@ -35,16 +186,16 @@ Instagram</a></span>
 Email</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
-<sup>6</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
+<sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
+<sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/k8s>K8s
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
-<sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/pprof>Pprof
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/blog>Blog
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/cybersecurity>Cybersecurity
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/gc>Gc
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/github>Github
 <sup>1</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/http2>Http2
-<sup>1</sup></a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<sup>1</sup></a></li></ul></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#介绍>介绍</a><ul><li><a href=#devops>DevOps</a></li><li><a href=#应用部署方式的演变>应用部署方式的演变</a></li></ul></li><li><a href=#kubernetes组件>kubernetes组件</a><ul><li><a href=#master>master</a></li><li><a href=#node>node</a></li><li><a href=#其他>其他</a></li><li><a href=#nodepodcontainerservice之间的关系>node、pod、container，service之间的关系</a></li></ul></li><li><a href=#kubectl>kubectl</a><ul><li><a href=#1-namespace>1. namespace</a></li><li><a href=#2pod>2.pod</a></li><li><a href=#3-service>3. service</a></li></ul></li><li><a href=#实战>实战</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
 <span class=with-love><i class="fa fa-heart"></i></span>
 <span class=copyright-author>野生菌のBlog</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.100.1</a></span>
 <span class=separator-line>/</span>
