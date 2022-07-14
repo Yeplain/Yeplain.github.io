@@ -1,4 +1,42 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>K8s原理与kubectl</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>K8s</category></categories><tags><tag>k8s</tag></tags><content type="html">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>Telnet与SSH区别，以及nc等命令</title><url>https://yeplain.xyz/post/sshtelnet/</url><categories><category>linux</category></categories><tags><tag>linux</tag></tags><content type="html">
+实习中通过ssh telnet 连接测试环境和生产环境，还使用nc命令测试数据发送
+首先，telnet和ssh都是连接远程计算机的连接协议，可以完成对完成计算机的控制，方便维护。其次，他们都是基于TCP/IP协议下的，所以连接时都需要知道目标机的网址或者域名，第三，他们都是与远程主机连接的通道，完成的目的是一样的，只不过手段不一样而已。
+Telnet Telnet连接计算机需要如下几个过程：
+客户端建立与远程主机的TCP连接；远程机通知客户机收到连接，等候输入；客户机收到通知后收集用户输入，将输入的字符串变成标准格式并传送给远程机；远程机接受输入的命令，并执行，将得到的结果输出给客户机；客户机在收到回显后显示在界面上。
+值得注意的是，telnet连接的时候直接建立TCP连接，所有传输的数据都是明文传输，所以是一种不安全的方式。
+SSH SSH 为Secure Shell的缩写，SSH 为建立在应用层基础上的安全协议，是比较可靠安全的协议。
+版本号协商阶段，SSH目前包括 SSH1和SSH2两个版本，双方通过版本协商确定使用的版本
+密钥和算法协商阶段，SSH支持多种加密算法，双方根据本端和对端支持的算法，协商出最终使用的算法
+认证阶段，SSH客户端向服务器端发起认证请求，服务器端对客户端进行认证
+会话请求阶段，认证通过后，客户端向服务器端发送会话请求
+交互会话阶段，会话请求通过后，服务器端和客户端进行信息的交互
+值得注意的是，由于ssh经过加密算法加密，收报文需要解密，发报文需要加密，导致其传输速度、效率较telnet低很多，然而，它却有telnet不具有的安全性。
+在使用SSH的时候，一个数字证书将认证客户端(你的工作站)和服务器(你的网络设备)之间的连接，并加密受保护的口令。SSH1使用RSA加密密钥，SSH2使用数字签名算法(DSA)密钥保护连接和认证。加密算法包括Blowfish，数据加密标准(DES)，以及三重DES(3DES)。SSH保护并且有助于防止欺骗，“中间人”攻击，以及数据包监听。 通过使用SSH把所有传输的数据进行加密，这样“中间人”这种攻击方式就不可能实现了，而且也能够防止DNS和IP欺骗。还有一个额外的好处就是传输的数据是经过压缩的，所以可以加快传输的速度。SSH有很多功能，它既可以代替telnet，又可以为ftp、pop、甚至ppp提供一个安全的“通道”。
+ssh root@192.168.2.200 nc nc 127.0.0.1 9092 nc命令的作用： 实现任意TCP/UDP端口的侦听，nc可以作为server以TCP或UDP方式侦听指定端口 端口的扫描，nc可以作为client发起TCP或UDP连接 机器之间传输文件 机器之间网络测速 参数：
+-l 用于指定nc将处于侦听模式。指定该参数，则意味着nc被当作server，侦听并接受连接，而非向其它地址发起连接。 -p 暂未用到（老版本的nc可能需要在端口号前加-p参数，下面测试环境是centos6.6，nc版本是nc-1.84，未用到-p参数） -s 指定发送数据的源IP地址，适用于多网卡机 -u 指定nc使用UDP协议，默认为TCP -v 输出交互或出错信息，新手调试时尤为有用 -w 超时秒数，后面跟数字 nc后，作为client，发送：
+server收到后，查看日志：</content></entry><entry><title>实习产出Internship outputs</title><url>https://yeplain.xyz/post/internship_outputs/</url><categories><category>linux</category></categories><tags><tag>linux</tag></tags><content type="html">
+更新记录一下实习产出~
+一、优化流量平台服务 优化主流程中本地名单验证时，需要读取数据库的问题 取消本地验证名单时读mysql的操作，仅保留读redis的操作
+更改redis上名单相关的ttl为永久，保证主流程的命中情况
+缓存服务本地库更新问题 对定时更新本地失陷名单的方法进行补充，增添了对各名单中条目来源的判断（腾讯/安恒），并定时调用各自的API进行更新
+二、 优化插件平台服务 网关扫描次数统计问题 对cacheHeartbeat新增ScanTimes，在扫描结束时增加对设备缓存的判断，在成功结束后，对扫描次数进行统计，并写入对应的gateway表中
+新增查找出现故障插件功能 在每次心跳开始时对Plugin重启时间进行判定，从而找出出现故障（即重启过）的插件，及其对应的产品型号，写入缓存 新增对数据库gateway表中对heartbeat_time字段的增删查改 新增在线网关统计功能 在心跳时将该网关加入缓存的在线网关有序集合，以时间戳为score进行记录； 定时5s获取在线网关数，并将其纳入监控项送入Prometheus展示； 修改插件版本更新数量限制实现方式 使用ZSet对版本更新的数量变化进行记录，score初始设置为定值，随着版本更新修改对应插件已更新数量，从而可以在Redis中动态地进行观测； 新增扫描结果记录功能 添加scan_gateway, scan_device, scan_cpe 三张表，用于存储扫描结果；
+在finish_ gateway _scan 方法中，通过request数据中的网关mac与pppoe在gateway表中查询对应的id，将其与此时记录的时间存入scan_gateway表中；
+再通过gatewayMac和pppoe查询在扫描设备列表时记录的缓存数据，根据查到的deivceMac在device表中查询对应的id与type，将其存入scan_device表中；
+在存cpe信息时，发现由于此前在match_probe方法中，未对cpe信息进行保存，缓存中只有leak相关信息，因此在match_probe中添加一个Redis哈希表来记录每台设备的各个端口对应的cpe相关信息;
+进而回到finish_ gateway _scan 方法中，对设备的每一个端口，通过在缓存中查询得到的对应的cpe相关信息，在cpe表中查询对应的cpeId，将其和端口、服务等信息存入scan_cpe表中；
+上述三个表通过scan_id、scan_device_id进行关联，需要保证参照完整性；
+三、问题研究与报告撰写 流量平台服务中gRPC负载均衡失效问题研究 k8s中，由于gRPC框架基于HTTP2.0，会出现负载均衡失效的问题，对该问题进行了研究，找到对应的解决方案并撰写了相关报告
+高危端口及解决方案研究 对135、139、445三个高危端口的概念、漏洞风险以及关闭和开启方法进行学习研究，并撰写报告提交
+Redis与Mysql一致性问题研究 流量平台中各类名单同时存储在Redis及Mysql数据库中，因此需要保证二者的一致性，对其一致性实现方式进行了学习并撰写了相关报告
+撰写流量平台业务流程说明文档 将流量平台的业务通过流程图可视化，并撰写文档解释说明
+撰写云宽带-安全方案文档 介绍我们的业务能力，以及简要的流程
+制作威胁情报库slide 分析展示威胁情报库能力
+四、为所有服务端增添Prometheus监控 对现有的四个服务：traffic-report-server、traffic-cache-server、traffic-context-consumer、probe-server-refactor添加Prometheus监控，连接grafana对统计信息进行图形化动态输出
+Probe-server添加监控 分别使用gauge和counter数据类型对总访问次数、正常访问次数、正常返回次数、TCP各个方法调用次数、在线网关数添加Prometheus监控
+五、对服务监控定位 通过kubectl对probe-server的pods进行监控 监控K8s下的probe-server的Pods, 出现问题时及时反馈，并通过日志定位
+通过pprof对出错位置定位 学习pprof的使用方式，通过它来对生产环境中出现的问题进行定位
+六、其他 解析生成plugin_name对照表 通过向probe-server原始版本的服务发送请求，分析返回的内容，得到product_class与plugin_name的对照表</content></entry><entry><title>K8s原理与kubectl</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>K8s</category></categories><tags><tag>k8s</tag></tags><content type="html">
 Kubernetes 这个名字源于希腊语，意为“舵手”或“飞行员”，简称 k8s，8代表中间的八个字符 Google 在 2014 年开源了 Kubernetes 项目，是Google基于Borg开源的容器编排调度引擎。
 在实习中，需要对probe-server的各个容器的状态进行监控，从而尽早定位问题，解决问题。
 介绍 DevOps DevOps（Development和Operations的组合词）是一组过程、方法与系统的统称，用于促进开发（应用程序/软件工程）、技术运营和质量保障（QA）部门之间的沟通、协作与整合。
@@ -49,7 +87,9 @@ Pod IP 会随着Pod的重建产生变化 Pod IP 仅仅是集群内可见的虚�
 Service可以看作是一组同类Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。
 # 暴露Service [root@master ~]# kubectl expose deploy nginx --name=svc-nginx1 --type=ClusterIP --port=80 --target-port=80 -n dev service/svc-nginx1 exposed # 查看service [root@master ~]# kubectl get svc svc-nginx1 -n dev -o wide NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE SELECTOR svc-nginx1 ClusterIP 10.109.179.231 &lt;none> 80/TCP 3m51s run=nginx # 这里产生了一个CLUSTER-IP，这就是service的IP，在Service的生命周期中，这个地址是不会变动的 # 可以通过这个IP访问当前service对应的POD [root@master ~]# curl 10.109.179.231:80 &lt;!DOCTYPE html> &lt;html> &lt;head> &lt;title>Welcome to nginx!&lt;/title> &lt;/head> &lt;body> &lt;h1>Welcome to nginx!&lt;/h1> ....... &lt;/body> &lt;/html> 实战 实习中，需要我对probe-server的运行情况进行监控：
 先看grafana曲线，若出现问题，则
-kubectl get pods|grep ref #看重启 kubectl top pods|grep ref #看负载 kubectl logs [pods名] --previous --tail 100 #看日志报错</content></entry><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
+kubectl get pods|grep ref #看重启 kubectl top pods|grep ref #看负载 kubectl logs [pods名] --previous --tail 100 #看日志报错 测试环境连接 ssh root@192.168.2.200 kubectl get pods kubectl exec -it probe-server-65789bfc65-c9f4q /bin/sh cd var/log/probe-server/ tail -f probe-server-65789bfc65-c9f4q.log-20220714 | grep "HeartBeat return" 另一边：
+kubectl exec -it probe-server-65789bfc65-c9f4q /bin/sh
+nc 127.0.0.1 9092</content></entry><entry><title>go语言中的pprof研究与应用</title><url>https://yeplain.xyz/post/pprof/</url><categories><category>Golang</category></categories><tags><tag>Golang</tag><tag>pprof</tag></tags><content type="html">
 相信很多人都听过“雷神 3”关于性能优化的故事。在一个 3D 游戏引擎的源码里，John Carmack 将 1/sqrt(x) 这个函数的执行效率优化到了极致。
 因为它是最底层的函数，而游戏里涉及到大量的这种运算，使得在运算资源极其紧张的 DOS 时代，游戏也可以流畅地运行。这就是性能优化的魅力！
 工作中，当业务量比较小的时候，用的机器也少，体会不到性能优化带来的收益。而当一个业务使用了几千台机器的时候，性能优化 20%，那就能省下几百台机器，一年能省几百万。省下来的这些钱，给员工发年终奖，那得多 Happy！
