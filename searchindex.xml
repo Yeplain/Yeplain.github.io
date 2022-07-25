@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>网关Gateway与路由器Router的区别</title><url>https://yeplain.xyz/post/gatewayrouter/</url><categories><category>basic</category></categories><tags><tag>basic</tag></tags><content type="html">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><search><entry><title>实习产出Internship outputs</title><url>https://yeplain.xyz/post/internship_outputs/</url><categories><category>internship</category></categories><tags><tag>internship</tag></tags><content type="html">
+更新记录一下实习产出~
+一、优化流量平台服务 优化主流程中本地名单验证时，需要读取数据库的问题 取消本地验证名单时读mysql的操作，仅保留读redis的操作
+更改redis上名单相关的ttl为永久，保证主流程的命中情况
+缓存服务本地库更新问题 对定时更新本地失陷名单的方法进行补充，增添了对各名单中条目来源的判断（腾讯/安恒），并定时调用各自的API进行更新
+二、 优化插件平台服务 网关扫描次数统计问题 对cacheHeartbeat新增ScanTimes，在扫描结束时增加对设备缓存的判断，在成功结束后，对扫描次数进行统计，并写入对应的gateway表中
+新增查找出现故障插件功能 在每次心跳开始时对Plugin重启时间进行判定，从而找出出现故障（即重启过）的插件，及其对应的产品型号，写入缓存 新增对数据库gateway表中对heartbeat_time字段的增删查改 新增在线网关统计功能 在心跳时将该网关加入缓存的在线网关有序集合，以时间戳为score进行记录； 定时5s获取在线网关数，并将其纳入监控项送入Prometheus展示； 修改插件版本更新数量限制实现方式 使用ZSet对版本更新的数量变化进行记录，score初始设置为定值，随着版本更新修改对应插件已更新数量，从而可以在Redis中动态地进行观测； 新增扫描结果记录功能 添加scan_gateway, scan_device, scan_cpe 三张表，用于存储扫描结果；
+在finish_ gateway _scan 方法中，通过request数据中的网关mac与pppoe在gateway表中查询对应的id，将其与此时记录的时间存入scan_gateway表中；
+再通过gatewayMac和pppoe查询在扫描设备列表时记录的缓存数据，根据查到的deivceMac在device表中查询对应的id与type，将其存入scan_device表中；
+在存cpe信息时，发现由于此前在match_probe方法中，未对cpe信息进行保存，缓存中只有leak相关信息，因此在match_probe中添加一个Redis哈希表来记录每台设备的各个端口对应的cpe相关信息;
+进而回到finish_ gateway _scan 方法中，对设备的每一个端口，通过在缓存中查询得到的对应的cpe相关信息，在cpe表中查询对应的cpeId，将其和端口、服务等信息存入scan_cpe表中；
+上述三个表通过scan_id、scan_device_id进行关联，需要保证参照完整性；
+优化Ping_failed请求处理方式 现有处理方式： 在每次接收到ping_failed请求后，在Redis对对应设备的string key, value +1，当大于等于10次后，返回“不要再扫描”的回复，并异步执行updatePingFailedDeviceStatus，删除Redis中对应key, 并将数据库中设备IsDisablePing字段设置为1；
+现有问题：由于updatePingFailedDeviceStatus方法中直接将缓存清空，所以对于某些一直无法ping通的设备，每一轮扫描时，都需要对该设备ping10次才能停止扫描，浪费了大量时间；
+解决方法：在updatePingFailedDeviceStatus中，不再直接删除该key，而是通过在外部设置TTL，使得一段时间内收到该设备的ping_failed后，都直接返回停止扫描，提高qps；
+三、问题研究与报告撰写 流量平台服务中gRPC负载均衡失效问题研究 k8s中，由于gRPC框架基于HTTP2.0，会出现负载均衡失效的问题，对该问题进行了研究，找到对应的解决方案并撰写了相关报告
+高危端口及解决方案研究 对135、139、445三个高危端口的概念、漏洞风险以及关闭和开启方法进行学习研究，并撰写报告提交
+Redis与Mysql一致性问题研究 流量平台中各类名单同时存储在Redis及Mysql数据库中，因此需要保证二者的一致性，对其一致性实现方式进行了学习并撰写了相关报告
+撰写流量平台业务流程说明文档 将流量平台的业务通过流程图可视化，并撰写文档解释说明
+撰写云宽带-安全方案文档 介绍我们的业务能力，以及简要的流程
+制作威胁情报库slide 分析展示威胁情报库能力
+四、为所有服务端增添Prometheus监控 对现有的四个服务：traffic-report-server、traffic-cache-server、traffic-context-consumer、probe-server-refactor添加Prometheus监控，连接grafana对统计信息进行图形化动态输出
+Probe-server添加监控 分别使用gauge和counter数据类型对总访问次数、正常访问次数、正常返回次数、TCP各个方法调用次数、在线网关数添加Prometheus监控
+五、对服务监控定位 通过kubectl对probe-server的pods进行监控 监控K8s下的probe-server的Pods, 出现问题时及时反馈，并通过日志定位
+通过pprof对出错位置定位 学习pprof的使用方式，通过它来对生产环境中出现的问题进行定位
+六、其他 解析生成旧版plugin_name对照表 通过向probe-server原始版本的服务发送请求，分析返回的内容，得到product_class，probe_version与plugin_name的对照表</content></entry><entry><title>golang 之 fasthttp</title><url>https://yeplain.xyz/post/fasthttp/</url><categories><category>golang</category></categories><tags><tag>golang</tag></tags><content type="html">
+需求：实习中，我们新版本探针的下发使用的是直接调用scan-apiserver接口的方式，现在需要新增加一个服务scan-scheduler，来对下载任务进行管控，调用接口的方式为http。
+continue&hellip;</content></entry><entry><title>golang restful 框架之 go-swagger</title><url>https://yeplain.xyz/post/go-swagger/</url><categories><category>golang</category></categories><tags><tag>swagger</tag></tags><content type="html">
+需求：实习中，我们新版本探针的下发使用的是直接调用scan-apiserver接口的方式，现在需要新增加一个服务scan-scheduler，来对下载任务进行管控，需要使用swagger。
+什么是Restful风格 概念 Restful风格指的是网络应用中就是资源定位和资源操作的风格。不是标准也不是协议。 Rest即Representational State Transfer的缩写，可译为"表现层状态转化”。Restful风格最大的特点为：资源、统一接口、URI和无状态。 这种风格设计的软件，可以更简洁，更有层次，更易于实现缓存等机制。
+基于HTTP，可以使用 XML 格式定义或 JSON 格式定义。
+特点 资源：互联网所有的事务都可以被抽象为资源，例如：.txt .html .jpg .mp3 .mp4等 RESTful 架构风格是围绕资源展开的，资源操作都是统一接口的： GET（SELECT）：从服务器取出资源（一项或多项）。 POST（CREATE）：在服务器新建一个资源。 PUT（UPDATE）：在服务器更新资源（客户端提供完整资源数据）。 PATCH（UPDATE）：在服务器更新资源（客户端提供需要修改的资源数据）。 DELETE（DELETE）：从服务器删除资源。 URI：每一个URI（统一资源定位符）指向一个特定的资源。通过URI来访问资源。最典型的URI就是URL。@RequestMapping的path/value属性表示的就是URL的一部分。 无状态：所有的资源，都可以通过URI定位，而且这个定位与其他资源无关。例如无需登录就可以通过URL查看，就是无状态。需要登录才能查看，是有状态。
+操作资源方式 传统 http://127.0.0.1/item/queryUser.action?id=1 查询,GET http://127.0.0.1/item/saveUser.action 新增,POST http://127.0.0.1/item/updateUser.action 更新,POST http://127.0.0.1/item/deleteUser.action?id=1 删除,GET或POST
+Restful 【GET】 /users # 查询用户信息列表
+【GET】 /users/1001 # 查看某个用户信息
+【POST】 /users # 新建用户信息
+【PUT】 /users/1001 # 更新用户信息(全部字段)
+【PATCH】 /users/1001 # 更新用户信息(部分字段)
+【DELETE】 /users/1001 # 删除用户信息
+之前的操作每次请求的接口或者地址,都在做描述,例如查询的时候用了queryUser,新增的时候用了saveUser ，修改的时候用了updateUser,其实完全没有这个必要, 使用了get请求,就是查询.使用post请求,就是新增的请求,PUT就是修改，delete就是删除，
+意图很明显,完全没有必要做描述,这就是为什么有了restful.
+go swagger restful 是这些年的高频词汇了，各大互联网公司也都纷纷推出了自己的 restful api，其实 restful 和 thrift，grpc 类似，就是一种协议，但是这种协议有点特殊的就是使用 http 接口，返回的对象一般是 json 格式，这样有个好处，就是可以供前端的 js 直接调用，使用非常方便，但 http 本身并不是一个高效的协议，后端的内部通信还是使用 grpc 或者 thrift 可以获得更高的性能
+其实如果只是要用 http 返回 json 本身并不是一件很难的事情，不用任何框架，golang 本身也能很方便做到，但是当你有很多 api 的时候，这些 api 的维护和管理就会变得很复杂，你自己都无法记住这些 api 应该填什么参数，返回什么，当然你可以花很多时间去维护一份接口文档，这样不仅耗时而且很难保证文档的即时性，准确性以及一致性
+swagger 有一整套规范来定义一个接口文件，类似于 thrift 和 proto 文件，定义了服务的请求内容和返回内容，同样也有工具可以生成各种不同语言的框架代码，在 golang 里面我们使用 go-swagger 这个工具，这个工具还提供了额外的功能，可以可视化显示这个接口，方便阅读
+go-swagger使用方法 api定义文件 首先需要写一个 api 定义文件
+swagger: '2.0' info: description: 不想依赖第三方的统计和评论，自己开发一个点赞评论系统 version: 1.0.0 title: comment_like contact: email: hatlonely@foxmail.com license: name: Apache 2.0 url: 'http://www.apache.org/licenses/LICENSE-2.0.html' host: hatlonely.com basePath: /api tags: - name: view description: 浏览 - name: like description: 点赞 - name: comment description: 评论 schemes: - http paths: /doview: get: tags: - view summary: 浏览 description: '' operationId: doView consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ErrorModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /countview: get: tags: - view summary: 浏览 description: '' operationId: countView consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/CountViewModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /dolike: get: tags: - like summary: 点赞 description: '' operationId: doLike consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ErrorModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /dounlike: get: tags: - like summary: 取消赞 description: '' operationId: doUnlike consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ErrorModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /showlike: get: tags: - like summary: 点赞否 description: '' operationId: showLike consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ShowLikeModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /countlike: get: tags: - like summary: 有多少赞 description: '' operationId: countLike consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/CountLikeModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /docomment: get: tags: - comment summary: 评论 description: '' operationId: doComment consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string - name: content in: query description: 评论内容 required: true type: string - name: nickname in: query description: 用户昵称 required: false type: string - name: mail in: query description: 用户邮箱 required: false type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ErrorModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' /showcomment: get: tags: - comment summary: 显示评论 description: '' operationId: showComment consumes: - application/json produces: - application/json parameters: - name: title in: query description: 文章标题 required: true type: string responses: '200': description: 成功 schema: $ref: '#/definitions/ShowCommentModel' '500': description: 内部错误 schema: $ref: '#/definitions/ErrorModel' definitions: CountViewModel: type: object properties: count: type: integer title: type: string example: golang json 性能分析 ShowLikeModel: type: object properties: ip: type: string example: 127.0.0.1 ua: type: string example: >- Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36 title: type: string example: golang json 性能分析 islike: type: boolean CountLikeModel: type: object properties: count: type: integer title: type: string example: golang json 性能分析 ShowCommentModel: type: object properties: comments: type: array items: $ref: '#/definitions/CommentModel' CommentModel: type: object properties: content: type: string example: 写得很好 nickname: type: string example: sonic mail: type: string example: sonic@foxmail.com ErrorModel: type: object properties: message: type: string example: error message code: type: integer example: 400 这个是 yaml 语法，有点像去掉了括号的 json
+这里完整地定义了请求方法、请求参数、正常返回接口、异常返回结果，有了这个文件只需要执行下面命令就能生成框架代码了
+swagger generate server -f api/comment_like/comment_like.yaml 还可以下面这个命令可视化查看这个接口文件
+swagger serve api/comment_like/comment_like.yaml 这个命令依赖 swagger 工具，可以通过下面命令获取
+go get -u github.com/go-swagger/go-swagger/cmd/swagger export PATH=$GOPATH/bin:$PATH 执行完了之后，你发现多了几个文件夹，其中 cmd 目录里面包含 main 函数，是整个程序的入口，restapi 文件夹下面包含协议相关代码，其中 configure_xxx.go 是需要特别关注的，你需要在这个文件里面实现你具体的业务逻辑
+现在你就其实已经可以运行程序了，go run cmd/comment-like-server/main.go，在浏览器里面访问一下你的 api，会返回一个错误信息，告诉你 api 还没有实现，下面就来实现一下吧
+api.LikeCountLikeHandler = like.CountLikeHandlerFunc(func(params like.CountLikeParams) middleware.Responder { count, err := comment_like.CountLike(params.Title) if err != nil { return like.NewCountLikeInternalServerError().WithPayload(&amp;models.ErrorModel{ Code: http.StatusInternalServerError, Message: err.Error(), }) } return like.NewCountLikeOK().WithPayload(&amp;models.CountLikeModel{ Count: count, Title: params.Title, }) }) 你只需要在这些 handler 里面实现自己的业务逻辑即可，这里对协议的封装非常好，除了业务逻辑以及打包返回，没有多余的逻辑
+再次运行，现在返回已经正常了
+统一处理 如果你对请求有一些操作需要统一处理，比如输出统一的日志之类的，可以重写这个函数，也在 configure_xxx.go 这个文件中
+func setupGlobalMiddleware(handler http.Handler) http.Handler { return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Header().Set("Access-Control-Allow-Origin", "*") handler.ServeHTTP(w, r) }) }</content></entry><entry><title>网关Gateway与路由器Router的区别</title><url>https://yeplain.xyz/post/gatewayrouter/</url><categories><category>basic</category></categories><tags><tag>basic</tag></tags><content type="html">
 “网关”是一个概念，“路由器”是一个产品。
 路由器可以做网关，防火墙
 可以做网关，三层交换机可以做网关，一台普通pc可以做网关，甚至一个智能手机也可以做网关。
@@ -34,29 +88,7 @@ SSH SSH 为Secure Shell的缩写，SSH 为建立在应用层基础上的安全�
 在使用SSH的时候，一个数字证书将认证客户端(你的工作站)和服务器(你的网络设备)之间的连接，并加密受保护的口令。SSH1使用RSA加密密钥，SSH2使用数字签名算法(DSA)密钥保护连接和认证。加密算法包括Blowfish，数据加密标准(DES)，以及三重DES(3DES)。SSH保护并且有助于防止欺骗，“中间人”攻击，以及数据包监听。 通过使用SSH把所有传输的数据进行加密，这样“中间人”这种攻击方式就不可能实现了，而且也能够防止DNS和IP欺骗。还有一个额外的好处就是传输的数据是经过压缩的，所以可以加快传输的速度。SSH有很多功能，它既可以代替telnet，又可以为ftp、pop、甚至ppp提供一个安全的“通道”。
 ssh root@192.168.2.200 nc nc 127.0.0.1 9092 nc命令的作用： 实现任意TCP/UDP端口的侦听，nc可以作为server以TCP或UDP方式侦听指定端口 端口的扫描，nc可以作为client发起TCP或UDP连接 机器之间传输文件 机器之间网络测速 参数：
 -l 用于指定nc将处于侦听模式。指定该参数，则意味着nc被当作server，侦听并接受连接，而非向其它地址发起连接。 -p 暂未用到（老版本的nc可能需要在端口号前加-p参数，下面测试环境是centos6.6，nc版本是nc-1.84，未用到-p参数） -s 指定发送数据的源IP地址，适用于多网卡机 -u 指定nc使用UDP协议，默认为TCP -v 输出交互或出错信息，新手调试时尤为有用 -w 超时秒数，后面跟数字 nc后，作为client，发送：
-server收到后，查看日志：</content></entry><entry><title>实习产出Internship outputs</title><url>https://yeplain.xyz/post/internship_outputs/</url><categories><category>internship</category></categories><tags><tag>internship</tag></tags><content type="html">
-更新记录一下实习产出~
-一、优化流量平台服务 优化主流程中本地名单验证时，需要读取数据库的问题 取消本地验证名单时读mysql的操作，仅保留读redis的操作
-更改redis上名单相关的ttl为永久，保证主流程的命中情况
-缓存服务本地库更新问题 对定时更新本地失陷名单的方法进行补充，增添了对各名单中条目来源的判断（腾讯/安恒），并定时调用各自的API进行更新
-二、 优化插件平台服务 网关扫描次数统计问题 对cacheHeartbeat新增ScanTimes，在扫描结束时增加对设备缓存的判断，在成功结束后，对扫描次数进行统计，并写入对应的gateway表中
-新增查找出现故障插件功能 在每次心跳开始时对Plugin重启时间进行判定，从而找出出现故障（即重启过）的插件，及其对应的产品型号，写入缓存 新增对数据库gateway表中对heartbeat_time字段的增删查改 新增在线网关统计功能 在心跳时将该网关加入缓存的在线网关有序集合，以时间戳为score进行记录； 定时5s获取在线网关数，并将其纳入监控项送入Prometheus展示； 修改插件版本更新数量限制实现方式 使用ZSet对版本更新的数量变化进行记录，score初始设置为定值，随着版本更新修改对应插件已更新数量，从而可以在Redis中动态地进行观测； 新增扫描结果记录功能 添加scan_gateway, scan_device, scan_cpe 三张表，用于存储扫描结果；
-在finish_ gateway _scan 方法中，通过request数据中的网关mac与pppoe在gateway表中查询对应的id，将其与此时记录的时间存入scan_gateway表中；
-再通过gatewayMac和pppoe查询在扫描设备列表时记录的缓存数据，根据查到的deivceMac在device表中查询对应的id与type，将其存入scan_device表中；
-在存cpe信息时，发现由于此前在match_probe方法中，未对cpe信息进行保存，缓存中只有leak相关信息，因此在match_probe中添加一个Redis哈希表来记录每台设备的各个端口对应的cpe相关信息;
-进而回到finish_ gateway _scan 方法中，对设备的每一个端口，通过在缓存中查询得到的对应的cpe相关信息，在cpe表中查询对应的cpeId，将其和端口、服务等信息存入scan_cpe表中；
-上述三个表通过scan_id、scan_device_id进行关联，需要保证参照完整性；
-三、问题研究与报告撰写 流量平台服务中gRPC负载均衡失效问题研究 k8s中，由于gRPC框架基于HTTP2.0，会出现负载均衡失效的问题，对该问题进行了研究，找到对应的解决方案并撰写了相关报告
-高危端口及解决方案研究 对135、139、445三个高危端口的概念、漏洞风险以及关闭和开启方法进行学习研究，并撰写报告提交
-Redis与Mysql一致性问题研究 流量平台中各类名单同时存储在Redis及Mysql数据库中，因此需要保证二者的一致性，对其一致性实现方式进行了学习并撰写了相关报告
-撰写流量平台业务流程说明文档 将流量平台的业务通过流程图可视化，并撰写文档解释说明
-撰写云宽带-安全方案文档 介绍我们的业务能力，以及简要的流程
-制作威胁情报库slide 分析展示威胁情报库能力
-四、为所有服务端增添Prometheus监控 对现有的四个服务：traffic-report-server、traffic-cache-server、traffic-context-consumer、probe-server-refactor添加Prometheus监控，连接grafana对统计信息进行图形化动态输出
-Probe-server添加监控 分别使用gauge和counter数据类型对总访问次数、正常访问次数、正常返回次数、TCP各个方法调用次数、在线网关数添加Prometheus监控
-五、对服务监控定位 通过kubectl对probe-server的pods进行监控 监控K8s下的probe-server的Pods, 出现问题时及时反馈，并通过日志定位
-通过pprof对出错位置定位 学习pprof的使用方式，通过它来对生产环境中出现的问题进行定位
-六、其他 解析生成plugin_name对照表 通过向probe-server原始版本的服务发送请求，分析返回的内容，得到product_class与plugin_name的对照表</content></entry><entry><title>K8s原理与kubectl</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>K8s</category></categories><tags><tag>k8s</tag></tags><content type="html">
+server收到后，查看日志：</content></entry><entry><title>K8s原理与kubectl</title><url>https://yeplain.xyz/post/k8s/</url><categories><category>K8s</category></categories><tags><tag>k8s</tag></tags><content type="html">
 Kubernetes 这个名字源于希腊语，意为“舵手”或“飞行员”，简称 k8s，8代表中间的八个字符 Google 在 2014 年开源了 Kubernetes 项目，是Google基于Borg开源的容器编排调度引擎。
 在实习中，需要对probe-server的各个容器的状态进行监控，从而尽早定位问题，解决问题。
 介绍 DevOps DevOps（Development和Operations的组合词）是一组过程、方法与系统的统称，用于促进开发（应用程序/软件工程）、技术运营和质量保障（QA）部门之间的沟通、协作与整合。
