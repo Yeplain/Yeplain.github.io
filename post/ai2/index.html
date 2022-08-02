@@ -12,10 +12,10 @@
 &nbsp;</span></span>
 <span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
 <span class=post-meta-item-text>字数：</span>
-<span class=leancloud-world-count>643 字</span></span>
+<span class=leancloud-world-count>1014 字</span></span>
 <span class=post-readtime><i class="fa fa-eye fa-fw"></i>
 <span class=post-meta-item-text>阅读：</span>
-<span class=leancloud-view-count>2分钟</span></span>
+<span class=leancloud-view-count>3分钟</span></span>
 <span id=/post/ai2/ class="leancloud_visitors post-visitor" data-flag-title="情报库AI引擎 (二)建立多线程爬虫提升爬取速度"><i class="fa fa-binoculars fa-fw"></i>
 <span class=post-meta-item-text>阅读次数：</span>
 <span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p><img src=/images/spider3.png alt></p><p>需求：现有的情报库来源均为第三方接口，需要通过这些原始数据，基于深度学习网络，构建能够实现自动检测的恶意网址识别模型。首先需要通过爬虫，挖掘三百多万条恶意网址的信息，并进行标签化，从而构建原始的数据集。</p><p>由于单线程爬取速度慢，因此进行了改进，实现多线程爬取数据。</p><p>基于python中的requests、beautifulSoup等库，编写了初步的爬虫脚本如下：</p><p>经过分析我发现，大部分的恶意网站可以通过其title和链接的名字判断出来，基于此，我们爬取每一个网站的 ‘title’ 和 ‘a&rsquo;，并将其存入文件中。</p><p>进一步，使用threading库，构建10个线程，并通过锁约束行号，避免冲突</p><p>实现代码如下：</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#080;font-style:italic># coding=utf-8</span>
@@ -124,10 +124,116 @@
 </span></span><span style=display:flex><span>
 </span></span><span style=display:flex><span>    book<span style=color:#666>.</span>save(<span style=color:#b44>&#39;features_ori_new2.xls&#39;</span>)
 </span></span><span style=display:flex><span>    <span style=color:#a2f>print</span>(<span style=color:#b44>&#34;+++++++++++++++Original Features Mining Finished+++++++++++++++&#34;</span>)
-</span></span></code></pre></div><p>结果示例如下：</p><p><img src=/images/spider2.png alt></p><p><img src=/images/spider3.png alt></p><p>构建了60个线程，爬取速度得到了飞速提升</p></div><footer class=post-footer><div class=post-tags><a href=/tags/python rel=tag title=python>#python#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/ai1/ rel=prev title="情报库AI引擎 (一)通过爬虫建立原始数据集">情报库AI引擎 (一)通过爬虫建立原始数据集
+</span></span></code></pre></div><p>结果示例如下：</p><p><img src=/images/spider2.png alt></p><p><img src=/images/spider3.png alt></p><p>构建了60个线程，爬取速度得到了飞速提升</p><p>后由于excel格式有数目限制，而我们的数据量很大，无法保存，因此改成了csv文件，以追加格式写入</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#080;font-style:italic># coding=utf-8</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>threading</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>time</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>requests</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>from</span> <span style=color:#00f;font-weight:700>bs4</span> <span style=color:#a2f;font-weight:700>import</span> BeautifulSoup
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>from</span> <span style=color:#00f;font-weight:700>lxml</span> <span style=color:#a2f;font-weight:700>import</span> etree
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>logging</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>pandas</span> <span style=color:#a2f;font-weight:700>as</span> <span style=color:#00f;font-weight:700>pd</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>xlrd</span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>import</span> <span style=color:#00f;font-weight:700>xlwt</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic># row = 1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>def</span> <span style=color:#00a000>craw_url</span>(url):
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic># global row</span>
+</span></span><span style=display:flex><span>    title_str <span style=color:#666>=</span> <span style=color:#b44>&#39;&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>try</span>:
+</span></span><span style=display:flex><span>        resp <span style=color:#666>=</span> s<span style=color:#666>.</span>get(<span style=color:#b44>&#39;https://&#39;</span><span style=color:#666>+</span>url, verify<span style=color:#666>=</span><span style=color:#a2f;font-weight:700>False</span>, timeout<span style=color:#666>=</span><span style=color:#666>2</span>)
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>except</span>:
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>try</span>:
+</span></span><span style=display:flex><span>            resp <span style=color:#666>=</span> s<span style=color:#666>.</span>get(<span style=color:#b44>&#39;http://&#39;</span> <span style=color:#666>+</span> url, verify<span style=color:#666>=</span><span style=color:#a2f;font-weight:700>False</span>, timeout<span style=color:#666>=</span><span style=color:#666>2</span>)
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>except</span>:
+</span></span><span style=display:flex><span>            <span style=color:#080;font-style:italic># print(&#39;%s url get error happened&#39; % url)</span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>-</span><span style=color:#666>1</span>
+</span></span><span style=display:flex><span>    resp<span style=color:#666>.</span>encoding <span style=color:#666>=</span> <span style=color:#b44>&#34;utf-8&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> resp<span style=color:#666>.</span>status_code <span style=color:#666>!=</span> <span style=color:#666>200</span>:
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># print(&#39;%s url 不可正常访问&#39; % url)</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>-</span><span style=color:#666>1</span>
+</span></span><span style=display:flex><span>    html <span style=color:#666>=</span> resp<span style=color:#666>.</span>text
+</span></span><span style=display:flex><span>    bes <span style=color:#666>=</span> BeautifulSoup(html, <span style=color:#b44>&#39;lxml&#39;</span>)
+</span></span><span style=display:flex><span>    a_list <span style=color:#666>=</span> bes<span style=color:#666>.</span>find_all(<span style=color:#b44>&#39;a&#39;</span>)
+</span></span><span style=display:flex><span>    title <span style=color:#666>=</span> bes<span style=color:#666>.</span>find(<span style=color:#b44>&#39;title&#39;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> title <span style=color:#a2f;font-weight:700>is</span> <span style=color:#a2f;font-weight:700>not</span> <span style=color:#a2f;font-weight:700>None</span>:
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> title<span style=color:#666>.</span>string <span style=color:#666>==</span> <span style=color:#b44>&#34;江苏反诈公益宣传&#34;</span>:
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>-</span><span style=color:#666>1</span>
+</span></span><span style=display:flex><span>        title_str <span style=color:#666>=</span> title<span style=color:#666>.</span>string
+</span></span><span style=display:flex><span>        <span style=color:#a2f>print</span>(title_str)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    link_info <span style=color:#666>=</span> []
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> a <span style=color:#a2f;font-weight:700>in</span> a_list:
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>if</span> a<span style=color:#666>.</span>string <span style=color:#a2f;font-weight:700>is</span> <span style=color:#a2f;font-weight:700>None</span>:
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>continue</span>
+</span></span><span style=display:flex><span>        link_info<span style=color:#666>.</span>append(a<span style=color:#666>.</span>string)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>if</span> (title <span style=color:#a2f;font-weight:700>is</span> <span style=color:#a2f;font-weight:700>not</span> <span style=color:#a2f;font-weight:700>None</span>) <span style=color:#a2f;font-weight:700>or</span> (<span style=color:#a2f>len</span>(link_info) <span style=color:#666>&gt;</span> <span style=color:#666>0</span>):
+</span></span><span style=display:flex><span>        <span style=color:#a2f>print</span>(url)
+</span></span><span style=display:flex><span>        a <span style=color:#666>=</span> {<span style=color:#b44>&#39;url&#39;</span>: [url], <span style=color:#b44>&#39;title&#39;</span>: [title_str], <span style=color:#b44>&#39;feature_ori&#39;</span>: [<span style=color:#a2f>str</span>(link_info)]}
+</span></span><span style=display:flex><span>        df <span style=color:#666>=</span> pd<span style=color:#666>.</span>DataFrame(a)
+</span></span><span style=display:flex><span>        df<span style=color:#666>.</span>to_csv(<span style=color:#b44>&#39;feature_ori_9.csv&#39;</span>, mode<span style=color:#666>=</span><span style=color:#b44>&#39;a&#39;</span>, index<span style=color:#666>=</span><span style=color:#a2f;font-weight:700>False</span>, header<span style=color:#666>=</span><span style=color:#a2f;font-weight:700>False</span>, encoding<span style=color:#666>=</span><span style=color:#b44>&#39;utf_8_sig&#39;</span>, sep<span style=color:#666>=</span><span style=color:#b44>&#39;|&#39;</span>)
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># print(&#39;--------------This is significantly url--------------&#39;)</span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>#</span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># lock.acquire()</span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># row += 1</span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># lock.release()</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>1</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>else</span>:
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># print(&#39;no info in this url&#39;)</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>return</span> <span style=color:#666>-</span><span style=color:#666>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>if</span> __name__ <span style=color:#666>==</span> <span style=color:#b44>&#39;__main__&#39;</span>:
+</span></span><span style=display:flex><span>    start <span style=color:#666>=</span> time<span style=color:#666>.</span>perf_counter()
+</span></span><span style=display:flex><span>    requests<span style=color:#666>.</span>adapters<span style=color:#666>.</span>DEFAULT_RETRIES <span style=color:#666>=</span> <span style=color:#666>5</span>
+</span></span><span style=display:flex><span>    s <span style=color:#666>=</span> requests<span style=color:#666>.</span>session()
+</span></span><span style=display:flex><span>    s<span style=color:#666>.</span>keep_alive <span style=color:#666>=</span> <span style=color:#a2f;font-weight:700>False</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic># read urls from the xlsx file</span>
+</span></span><span style=display:flex><span>    data <span style=color:#666>=</span> xlrd<span style=color:#666>.</span>open_workbook(<span style=color:#b44>r</span><span style=color:#b44>&#39;D:\shixi\model\traffic_target_1-1.xlsx&#39;</span>)
+</span></span><span style=display:flex><span>    table <span style=color:#666>=</span> data<span style=color:#666>.</span>sheets()[<span style=color:#666>0</span>]
+</span></span><span style=display:flex><span>    urls <span style=color:#666>=</span> table<span style=color:#666>.</span>col_values(<span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic># write features_original to the xlsx file</span>
+</span></span><span style=display:flex><span>    book <span style=color:#666>=</span> xlwt<span style=color:#666>.</span>Workbook(encoding<span style=color:#666>=</span><span style=color:#b44>&#39;utf-8&#39;</span>, style_compression<span style=color:#666>=</span><span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>    sheet <span style=color:#666>=</span> book<span style=color:#666>.</span>add_sheet(<span style=color:#b44>&#39;features_ori&#39;</span>, cell_overwrite_ok<span style=color:#666>=</span><span style=color:#a2f;font-weight:700>True</span>)
+</span></span><span style=display:flex><span>    col <span style=color:#666>=</span> (<span style=color:#b44>&#39;url&#39;</span>, <span style=color:#b44>&#39;title&#39;</span>, <span style=color:#b44>&#39;features_ori&#39;</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic># anti-anti-spider</span>
+</span></span><span style=display:flex><span>    headers <span style=color:#666>=</span> {
+</span></span><span style=display:flex><span>        <span style=color:#b44>&#39;User-Agent&#39;</span>: <span style=color:#b44>&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)z </span><span style=color:#b62;font-weight:700>\
+</span></span></span><span style=display:flex><span><span style=color:#b62;font-weight:700></span><span style=color:#b44>                Chrome/103.0.0.0 Safari/537.36&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#b44>&#39;Cookie&#39;</span>: <span style=color:#b44>&#34;buvid3=0C3F9901-0B4A-20F7-B743-F39956A904E533362infoc; innersign=0&#39;&#34;</span>}
+</span></span><span style=display:flex><span>    s<span style=color:#666>.</span>headers <span style=color:#666>=</span> headers
+</span></span><span style=display:flex><span>    logging<span style=color:#666>.</span>captureWarnings(<span style=color:#a2f;font-weight:700>True</span>)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic># 多线程</span>
+</span></span><span style=display:flex><span>    lock <span style=color:#666>=</span> threading<span style=color:#666>.</span>Lock()
+</span></span><span style=display:flex><span>    max_connections <span style=color:#666>=</span> <span style=color:#666>60</span>
+</span></span><span style=display:flex><span>    pool_sema <span style=color:#666>=</span> threading<span style=color:#666>.</span>BoundedSemaphore(max_connections)
+</span></span><span style=display:flex><span>    thread_list <span style=color:#666>=</span> []
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> url <span style=color:#a2f;font-weight:700>in</span> urls:
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic># if row &gt;= 10000:</span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>#     break</span>
+</span></span><span style=display:flex><span>        pool_sema<span style=color:#666>.</span>acquire()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        thread <span style=color:#666>=</span> threading<span style=color:#666>.</span>Thread(target<span style=color:#666>=</span>craw_url, args<span style=color:#666>=</span>[url])
+</span></span><span style=display:flex><span>        thread<span style=color:#666>.</span>start()
+</span></span><span style=display:flex><span>        pool_sema<span style=color:#666>.</span>release()
+</span></span><span style=display:flex><span>        thread_list<span style=color:#666>.</span>append(thread)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>for</span> t <span style=color:#a2f;font-weight:700>in</span> thread_list:
+</span></span><span style=display:flex><span>        t<span style=color:#666>.</span>join()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f>print</span>(<span style=color:#b44>&#34;+++++++++++++++Original Features Mining Finished+++++++++++++++&#34;</span>)
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/python rel=tag title=python>#python#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://yeplain.xyz/post/ai3/ rel=next title="情报库AI引擎 (三)数据清洗"><i class="fa fa-chevron-left"></i> 情报库AI引擎 (三)数据清洗</a></div><div class="post-nav-prev post-nav-item"><a href=https://yeplain.xyz/post/ai1/ rel=prev title="情报库AI引擎 (一)通过爬虫建立原始数据集">情报库AI引擎 (一)通过爬虫建立原始数据集
 <i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
 <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>30</span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap>文章目录</li><li class=sidebar-nav-overview data-target=site-overview>站点概览</li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/touxiang.jpg alt=野生菌><p class=site-author-name itemprop=name>野生菌</p><p class="site-description motion-element" itemprop=description>Stay Wild & Stay Curious</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>32</span>
 <span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>9</span>
 <span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>21</span>
 <span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/Yeplain target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
@@ -141,8 +247,8 @@ Email</a></span></div><div class="links-of-blogroll motion-element links-of-blog
 友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://blog.foxcii.com/ title=Foxcii target=_blank>Foxcii</a></li><li class=links-of-blogroll-item><a href=https://www.sulvblog.cn/ title="Sulv's Blog" target=_blank>Sulv's Blog</a></li><li class=links-of-blogroll-item><a href=http://https://dvel.me/ title="Dvel's Blog" target=_blank>Dvel's Blog</a></li><li class=links-of-blogroll-item><a href=https://tomtomyoung.top/ title=TomtomYoung target=_blank>TomtomYoung</a></li><li class=links-of-blogroll-item><a href=https://freeze.org.cn/ title="Net Pipe's Blog" target=_blank>Net Pipe's Blog</a></li><li class=links-of-blogroll-item><a href=https://tzy1997.com/ title=Ethan.Tzy target=_blank>Ethan.Tzy</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
 标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/basic>Basic
 <sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/golang>Golang
+<sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/python>Python
 <sup>5</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
-<sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/python>Python
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/redis>Redis
 <sup>3</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/grpc>Grpc
 <sup>2</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/k8s>K8s
